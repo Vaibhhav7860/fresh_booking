@@ -1,0 +1,71 @@
+.tabs {
+  display: flex;
+  margin-bottom: 28px;
+  border-bottom: 2px solid var(--border-light);
+}
+
+.tab {
+  flex: 1;
+  padding: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: var(--transition);
+}
+
+.tab.active {
+  color: var(--primary);
+}
+
+.tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--primary-light));
+  border-radius: 3px;
+}
+
+.form { margin-top: 8px; }
+
+.submitBtn {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.error {
+  color: var(--error);
+  font-size: 13px;
+  padding: 11px 16px;
+  background: #FFF5F5;
+  border-radius: var(--radius-md);
+  margin-bottom: 14px;
+  border: 1px solid rgba(220, 53, 69, 0.15);
+}
+
+.switchText {
+  text-align: center;
+  margin-top: 22px;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.switchBtn {
+  color: var(--primary);
+  font-weight: 600;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.switchBtn:hover {
+  text-decoration: underline;
+}
