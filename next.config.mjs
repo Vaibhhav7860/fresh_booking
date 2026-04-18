@@ -8,10 +8,12 @@ const nextConfig = {
         port: '8000',
         pathname: '/api/images/**',
       },
+      {
+        protocol: 'https',
+        hostname: '**',
+        pathname: '/api/images/**',
+      },
     ],
-  },
-  env: {
-    NEXT_PUBLIC_API_URL: 'http://localhost:8000',
   },
 };
 

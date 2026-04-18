@@ -1,4 +1,4 @@
-﻿import os
+import os
 
 MONGODB_URL = os.getenv("MONGODB_URL", "mongodb://localhost:27017")
 DB_NAME = os.getenv("DB_NAME", "freshbooking")
@@ -7,7 +7,8 @@ JWT_SECRET = os.getenv("JWT_SECRET", "freshbooking-super-secret-key-change-in-pr
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRE_MINUTES = 60 * 24 * 7  # 7 days
 
+_extra_origins = os.getenv("CORS_ORIGINS", "").split(",")
 CORS_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-]
+] + [o.strip() for o in _extra_origins if o.strip()]
