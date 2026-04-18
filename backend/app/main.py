@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import CORS_ORIGINS
-from app.routers import auth, properties, images, admin
+from app.routers import auth, properties, images, admin, inquiries
 
 app = FastAPI(
     title="FreshBooking API",
@@ -23,6 +23,7 @@ app.include_router(auth.router)
 app.include_router(properties.router)
 app.include_router(images.router)
 app.include_router(admin.router)
+app.include_router(inquiries.router)
 
 
 @app.get("/")

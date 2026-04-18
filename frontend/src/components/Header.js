@@ -34,12 +34,12 @@ export default function Header() {
 
           {/* Desktop Nav */}
           <nav className={styles.nav}>
-            <Link href="/properties?listing_type=sell" className={styles.navLink}>Buy</Link>
-            <Link href="/properties?listing_type=rent" className={styles.navLink}>Rent</Link>
-            <Link href="/properties?listing_type=sell&property_type=flat" className={styles.navLink}>
+            <Link href="/properties?quick=buy" className={styles.navLink}>Buy</Link>
+            <Link href="/properties?quick=rent" className={styles.navLink}>Rent</Link>
+            <Link href="/properties/new-launches" className={styles.navLink}>
               New Launch <span className={styles.newDot}></span>
             </Link>
-            <Link href="/properties?property_type=office" className={styles.navLink}>Commercial</Link>
+            <Link href="/properties?quick=commercial" className={styles.navLink}>Commercial</Link>
           </nav>
 
           {/* Actions */}
@@ -95,10 +95,10 @@ export default function Header() {
         {/* Mobile Menu */}
         {mobileMenu && (
           <div className={styles.mobileMenu}>
-            <Link href="/properties?listing_type=sell" onClick={() => setMobileMenu(false)}>Buy Property</Link>
-            <Link href="/properties?listing_type=rent" onClick={() => setMobileMenu(false)}>Rent Property</Link>
-            <Link href="/properties?listing_type=sell&property_type=flat" onClick={() => setMobileMenu(false)}>New Launch</Link>
-            <Link href="/properties?property_type=office" onClick={() => setMobileMenu(false)}>Commercial</Link>
+            <Link href="/properties?quick=buy" onClick={() => setMobileMenu(false)}>Buy Property</Link>
+            <Link href="/properties?quick=rent" onClick={() => setMobileMenu(false)}>Rent Property</Link>
+            <Link href="/properties/new-launches" onClick={() => setMobileMenu(false)}>New Launch</Link>
+            <Link href="/properties?quick=commercial" onClick={() => setMobileMenu(false)}>Commercial</Link>
             <Link href="/post-property" onClick={() => setMobileMenu(false)}>Post Property</Link>
             {user && <Link href="/my-properties" onClick={() => setMobileMenu(false)}>My Properties</Link>}
             {user?.role === 'admin' && <Link href="/admin" onClick={() => setMobileMenu(false)}>Admin Dashboard</Link>}

@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import PropertyCard from './PropertyCard';
 import { getNewLaunches } from '@/lib/api';
 
@@ -10,10 +11,17 @@ export default function SectionNewLaunches() {
   return (
     <section className="section">
       <div className="container">
-        <h2 className="section-title">New Launches</h2>
-        <p className="section-subtitle">Explore the latest residential projects and new developments</p>
+        <div className="section-header-row">
+          <div>
+            <h2 className="section-title">New Launches</h2>
+            <p className="section-subtitle">Explore the latest residential projects and new developments</p>
+          </div>
+          {properties.length > 4 && (
+            <Link href="/properties/new-launches" className="btn btn-outline btn-view-all">View All →</Link>
+          )}
+        </div>
         {properties.length > 0 ? (
-          <div className="grid-4">{properties.map(p => <PropertyCard key={p.id} property={p} />)}</div>
+          <div className="grid-4">{properties.slice(0, 4).map(p => <PropertyCard key={p.id} property={p} />)}</div>
         ) : (
           <div style={{ textAlign: 'center', padding: '40px', color: 'var(--text-muted)' }}>
             <p style={{ fontSize: '48px', marginBottom: '12px' }}>🏗️</p>

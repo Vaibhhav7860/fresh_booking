@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { getUsers, deleteUser, getProperties, toggleFeature, toggleVerify, deleteProperty as adminDeleteProp, formatPrice } from '@/lib/api';
+import { getUsers, deleteUser, getAdminProperties, toggleFeature, toggleVerify, toggleNewLaunch, toggleTrending, deleteProperty as adminDeleteProp, getInquiries, formatPrice } from '@/lib/api';
 import styles from './page.module.css';
 
 export default function AdminPage() {
@@ -9,13 +9,20 @@ export default function AdminPage() {
   const [tab, setTab] = useState('properties');
   const [users, setUsers] = useState([]);
   const [properties, setProperties] = useState([]);
+  const [inquiries, setInquiries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [tab]);
 
   useEffect(() => {
     if (user?.role === 'admin') {
-      Promise.all([getUsers(), getProperties()])
-        .then(([u, p]) => { setUsers(u); setProperties(p); })
+      Promise.all([getUsers(), getAdminProperties(), getInquiries()])
+        .then(([u, p, i]) => { setUsers(u); setProperties(p); setInquiries(i || []); })
         .finally(() => setLoading(false));
     } else {
       setLoading(false);
@@ -42,6 +49,18 @@ export default function AdminPage() {
     const res = await toggleVerify(id);
     setProperties(prev => prev.map(p => p.id === id ? { ...p, is_verified: res.is_verified } : p));
     showToast(res.is_verified ? 'Property verified' : 'Verification removed');
+  };
+
+  const handleToggleNewLaunch = async (id) => {
+    const res = await toggleNewLaunch(id);
+    setProperties(prev => prev.map(p => p.id === id ? { ...p, is_new_launch: res.is_new_launch } : p));
+    showToast(res.is_new_launch ? 'Marked as New Launch' : 'New Launch removed');
+  };
+
+  const handleToggleTrending = async (id) => {
+    const res = await toggleTrending(id);
+    setProperties(prev => prev.map(p => p.id === id ? { ...p, is_trending: res.is_trending } : p));
+    showToast(res.is_trending ? 'Marked as Trending' : 'Trending removed');
   };
 
   const handleDeleteProperty = async (id) => {
@@ -94,11 +113,20 @@ export default function AdminPage() {
             <span className={styles.statNum}>{properties.filter(p => p.is_verified).length}</span>
             <span className={styles.statLabel}>Verified</span>
           </div>
+          <div className={styles.statCard}>
+            <span className={styles.statNum}>{properties.filter(p => p.is_new_launch).length}</span>
+            <span className={styles.statLabel}>New Launches</span>
+          </div>
+          <div className={styles.statCard}>
+            <span className={styles.statNum}>{properties.filter(p => p.is_trending).length}</span>
+            <span className={styles.statLabel}>Trending</span>
+          </div>
         </div>
 
         <div className={styles.tabs}>
           <button className={`${styles.tab} ${tab === 'properties' ? styles.tabActive : ''}`} onClick={() => setTab('properties')}>Properties ({properties.length})</button>
           <button className={`${styles.tab} ${tab === 'users' ? styles.tabActive : ''}`} onClick={() => setTab('users')}>Users ({users.length})</button>
+          <button className={`${styles.tab} ${tab === 'inquiries' ? styles.tabActive : ''}`} onClick={() => setTab('inquiries')}>Enquiries ({inquiries.length})</button>
         </div>
 
         {tab === 'properties' && (
@@ -108,9 +136,15 @@ export default function AdminPage() {
               <span>City</span>
               <span>Price</span>
               <span>Owner</span>
-              <span>Actions</span>
+              <span className={styles.actionHeaders}>
+                <span className={styles.actionHeaderItem}>Featured</span>
+                <span className={styles.actionHeaderItem}>Verify</span>
+                <span className={styles.actionHeaderItem}>New Launch</span>
+                <span className={styles.actionHeaderItem}>Trending</span>
+                <span className={styles.actionHeaderItem}>Delete</span>
+              </span>
             </div>
-            {properties.map(p => (
+            {properties.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(p => (
               <div key={p.id} className={styles.tableRow}>
                 <span className={styles.propName}>{p.project_name || p.property_type}</span>
                 <span>{p.city}</span>
@@ -119,10 +153,33 @@ export default function AdminPage() {
                 <span className={styles.actions}>
                   <button className={`${styles.actionBtn} ${p.is_featured ? styles.activeAction : ''}`} onClick={() => handleToggleFeature(p.id)} title="Toggle Featured">⭐</button>
                   <button className={`${styles.actionBtn} ${p.is_verified ? styles.activeAction : ''}`} onClick={() => handleToggleVerify(p.id)} title="Toggle Verified">✓</button>
+                  <button className={`${styles.actionBtn} ${p.is_new_launch ? styles.activeAction : ''}`} onClick={() => handleToggleNewLaunch(p.id)} title="Toggle New Launch">🏗️</button>
+                  <button className={`${styles.actionBtn} ${p.is_trending ? styles.activeAction : ''}`} onClick={() => handleToggleTrending(p.id)} title="Toggle Trending">📈</button>
                   <button className={styles.actionBtnDanger} onClick={() => handleDeleteProperty(p.id)} title="Delete">🗑</button>
                 </span>
               </div>
             ))}
+            {properties.length > itemsPerPage && (
+              <div className={styles.pagination}>
+                <button 
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))} 
+                  disabled={currentPage === 1}
+                  className={styles.pageBtn}
+                >
+                  Previous
+                </button>
+                <span className={styles.pageInfo}>
+                  Page {currentPage} of {Math.ceil(properties.length / itemsPerPage)}
+                </span>
+                <button 
+                  onClick={() => setCurrentPage(p => Math.min(Math.ceil(properties.length / itemsPerPage), p + 1))} 
+                  disabled={currentPage === Math.ceil(properties.length / itemsPerPage)}
+                  className={styles.pageBtn}
+                >
+                  Next
+                </button>
+              </div>
+            )}
           </div>
         )}
 
@@ -135,7 +192,7 @@ export default function AdminPage() {
               <span>Role</span>
               <span>Actions</span>
             </div>
-            {users.map(u => (
+            {users.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(u => (
               <div key={u.id} className={styles.tableRow}>
                 <span className={styles.propName}>{u.name}</span>
                 <span>{u.email}</span>
@@ -148,6 +205,81 @@ export default function AdminPage() {
                 </span>
               </div>
             ))}
+            {users.length > itemsPerPage && (
+              <div className={styles.pagination}>
+                <button 
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))} 
+                  disabled={currentPage === 1}
+                  className={styles.pageBtn}
+                >
+                  Previous
+                </button>
+                <span className={styles.pageInfo}>
+                  Page {currentPage} of {Math.ceil(users.length / itemsPerPage)}
+                </span>
+                <button 
+                  onClick={() => setCurrentPage(p => Math.min(Math.ceil(users.length / itemsPerPage), p + 1))} 
+                  disabled={currentPage === Math.ceil(users.length / itemsPerPage)}
+                  className={styles.pageBtn}
+                >
+                  Next
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {tab === 'inquiries' && (
+          <div className={styles.table}>
+            <div className={styles.tableHeader}>
+              <span>Date</span>
+              <span>Lead Name</span>
+              <span>Contact</span>
+              <span>Property Interest</span>
+              <span>Type</span>
+            </div>
+            {inquiries.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map(inq => (
+              <div key={inq.id} className={styles.tableRow}>
+                <span className={styles.propName}>
+                  {new Date(inq.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                </span>
+                <span>{inq.name}</span>
+                <span style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  {inq.phone && <span style={{ fontSize: '13px', fontWeight: '600' }}>📞 {inq.phone}</span>}
+                  {inq.email && <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>✉️ {inq.email}</span>}
+                </span>
+                <span style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <span style={{ fontWeight: '600', color: 'var(--primary)' }}>{inq.property_title}</span>
+                  <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>📍 {inq.property_city}</span>
+                </span>
+                <span>
+                  <span className={styles.roleBadge} style={{ backgroundColor: inq.inquiry_type === 'email' ? '#EBF5FF' : '#F3E8FF', color: inq.inquiry_type === 'email' ? '#1E40AF' : '#6B21A8' }}>
+                    {inq.inquiry_type === 'email' ? 'Email Request' : 'Contact Reveal'}
+                  </span>
+                </span>
+              </div>
+            ))}
+            {inquiries.length > itemsPerPage && (
+              <div className={styles.pagination}>
+                <button 
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))} 
+                  disabled={currentPage === 1}
+                  className={styles.pageBtn}
+                >
+                  Previous
+                </button>
+                <span className={styles.pageInfo}>
+                  Page {currentPage} of {Math.ceil(inquiries.length / itemsPerPage)}
+                </span>
+                <button 
+                  onClick={() => setCurrentPage(p => Math.min(Math.ceil(inquiries.length / itemsPerPage), p + 1))} 
+                  disabled={currentPage === Math.ceil(inquiries.length / itemsPerPage)}
+                  className={styles.pageBtn}
+                >
+                  Next
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>

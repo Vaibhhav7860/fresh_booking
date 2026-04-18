@@ -49,10 +49,14 @@ export const uploadImage = async (file) => {
 };
 
 // Admin
+export const getAdminProperties = () => apiFetch('/api/admin/properties?limit=1000');
 export const getUsers = () => apiFetch('/api/admin/users');
 export const deleteUser = (id) => apiFetch(`/api/admin/users/${id}`, { method: 'DELETE' });
 export const toggleFeature = (id) => apiFetch(`/api/admin/properties/${id}/feature`, { method: 'PUT' });
 export const toggleVerify = (id) => apiFetch(`/api/admin/properties/${id}/verify`, { method: 'PUT' });
+export const toggleNewLaunch = (id) => apiFetch(`/api/admin/properties/${id}/new-launch`, { method: 'PUT' });
+export const toggleTrending = (id) => apiFetch(`/api/admin/properties/${id}/trending`, { method: 'PUT' });
+export const getInquiries = (token) => apiFetch('/api/inquiries', { headers: { Authorization: `Bearer ${token}` } });
 
 // Utility
 export function formatPrice(price) {

@@ -2,11 +2,11 @@ import Link from 'next/link';
 import styles from './SectionGetStarted.module.css';
 
 const OPTIONS = [
-  { icon: '🏠', title: 'Buy a Home', desc: 'Find your dream property from thousands of listings', link: '/properties?listing_type=sell', color: '#0D9488' },
-  { icon: '🔑', title: 'Rent a Home', desc: 'Discover rental properties that fit your budget', link: '/properties?listing_type=rent', color: '#6366F1' },
-  { icon: '✨', title: 'New Launches', desc: 'Explore newly launched projects across India', link: '/properties?listing_type=sell', color: '#F59E0B', badge: 'NEW' },
+  { icon: '🏠', title: 'Buy a Home', desc: 'Find your dream property from thousands of listings', link: '/properties?quick=buy', color: '#0D9488' },
+  { icon: '🔑', title: 'Rent a Home', desc: 'Discover rental properties that fit your budget', link: '/properties?quick=rent', color: '#6366F1' },
+  { icon: '✨', title: 'New Launches', desc: 'Explore newly launched projects across India', link: '/properties?quick=new_launch', color: '#F59E0B', badge: 'NEW' },
   { icon: '📝', title: 'Post Property', desc: 'Sell or rent your property with ease', link: '/post-property', color: '#10B981' },
-  { icon: '📍', title: 'Plots / Land', desc: 'Find the perfect plot for your next investment', link: '/properties?property_type=plot', color: '#F97316' },
+  { icon: '📍', title: 'Plots / Land', desc: 'Find the perfect plot for your next investment', link: '/properties?quick=plot', color: '#F97316' },
 ];
 
 export default function SectionGetStarted() {

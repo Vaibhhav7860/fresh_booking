@@ -60,6 +60,21 @@ function PropertiesContent() {
 
   const [quickFilter, setQuickFilter] = useState(searchParams.get('quick') || '');
 
+  // Sync state with URL changes (for header navigation)
+  useEffect(() => {
+    const q = searchParams.get('quick') || '';
+    if (q !== quickFilter) {
+      setQuickFilter(q);
+      // Optional: Clear manual filters when a major category is clicked from header
+      setSearchQuery('');
+      setSelectedCities([]);
+      setMinBudget('');
+      setMaxBudget('');
+      setBhkTypes([]);
+      setPropertyTypes([]);
+    }
+  }, [searchParams.get('quick')]);
+
   const toggleArrayItem = (setter, array, item) => {
     if (array.includes(item)) setter(array.filter((i) => i !== item));
     else setter([...array, item]);
@@ -102,10 +117,7 @@ function PropertiesContent() {
       if (quickFilter === 'buy') params.set('listing_type', 'sell');
       if (quickFilter === 'rent') params.set('listing_type', 'rent');
       if (quickFilter === 'new_launch') {
-        params.set('listing_type', 'sell');
-        if (!ageOfProperty.includes('New Construction')) {
-          params.set('age_of_property', 'New Construction');
-        }
+        params.set('age_of_property', 'New Construction');
       }
       if (quickFilter === 'commercial') params.set('property_types', 'office,shop');
       if (quickFilter === 'plot') params.set('property_types', 'plot');
@@ -127,11 +139,20 @@ function PropertiesContent() {
     return () => clearTimeout(timer);
   }, [selectedCities, searchQuery, minBudget, maxBudget, budgetSlider, bhkTypes, propertyTypes, amenities, furnishing, postedBy, ageOfProperty, quickFilter]);
 
+  let pageTitle = 'Browse Properties';
+  if (quickFilter === 'buy') pageTitle = 'Properties for Sale';
+  else if (quickFilter === 'rent') pageTitle = 'Properties for Rent';
+  else if (quickFilter === 'commercial') pageTitle = 'Commercial Properties';
+  else if (quickFilter === 'plot') pageTitle = 'Plots & Land for Sale';
+  else if (quickFilter === 'new_launch') pageTitle = 'New Launch Properties';
+  else if (propertyTypes.includes('office') || propertyTypes.includes('shop')) pageTitle = 'Commercial Properties';
+  else if (propertyTypes.includes('plot')) pageTitle = 'Plots & Land';
+  else if (searchQuery) pageTitle = `Search Results for "${searchQuery}"`;
 
   return (
     <div className={styles.page}>
       <div className="container">
-        <h1 className={styles.title}>Browse Properties</h1>
+        <h1 className={styles.title}>{pageTitle}</h1>
 
         <div className={styles.pageGrid}>
           {/* Sidebar */}

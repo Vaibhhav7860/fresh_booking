@@ -10,6 +10,16 @@ from app.routers.properties import property_doc_to_response
 router = APIRouter(prefix="/api/admin", tags=["Admin"])
 
 
+@router.get("/properties", response_model=List[PropertyResponse])
+def admin_list_properties(
+    skip: int = Query(0, ge=0),
+    limit: int = Query(1000, ge=1, le=5000),
+    current_user: dict = Depends(get_current_admin),
+):
+    cursor = properties_collection.find().sort("created_at", -1).skip(skip).limit(limit)
+    return [property_doc_to_response(doc) for doc in cursor]
+
+
 @router.get("/users", response_model=List[UserResponse])
 def list_users(
     skip: int = Query(0, ge=0),
@@ -75,6 +85,38 @@ def toggle_verify(property_id: str, current_user: dict = Depends(get_current_adm
         {"_id": ObjectId(property_id)}, {"$set": {"is_verified": new_val}}
     )
     return {"is_verified": new_val}
+
+
+@router.put("/properties/{property_id}/new-launch")
+def toggle_new_launch(property_id: str, current_user: dict = Depends(get_current_admin)):
+    if not ObjectId.is_valid(property_id):
+        raise HTTPException(status_code=400, detail="Invalid property ID")
+
+    doc = properties_collection.find_one({"_id": ObjectId(property_id)})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Property not found")
+
+    new_val = not doc.get("is_new_launch", False)
+    properties_collection.update_one(
+        {"_id": ObjectId(property_id)}, {"$set": {"is_new_launch": new_val}}
+    )
+    return {"is_new_launch": new_val}
+
+
+@router.put("/properties/{property_id}/trending")
+def toggle_trending(property_id: str, current_user: dict = Depends(get_current_admin)):
+    if not ObjectId.is_valid(property_id):
+        raise HTTPException(status_code=400, detail="Invalid property ID")
+
+    doc = properties_collection.find_one({"_id": ObjectId(property_id)})
+    if not doc:
+        raise HTTPException(status_code=404, detail="Property not found")
+
+    new_val = not doc.get("is_trending", False)
+    properties_collection.update_one(
+        {"_id": ObjectId(property_id)}, {"$set": {"is_trending": new_val}}
+    )
+    return {"is_trending": new_val}
 
 
 @router.delete("/properties/{property_id}", status_code=204)

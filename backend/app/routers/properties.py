@@ -31,6 +31,9 @@ def property_doc_to_response(doc: dict) -> PropertyResponse:
         amenities=doc.get("amenities", []),
         posted_by=doc.get("posted_by", "Owner"),
         age_of_property=doc.get("age_of_property", "New Construction"),
+        facing=doc.get("facing"),
+        contact_email=doc.get("contact_email"),
+        contact_phone=doc.get("contact_phone"),
         image_ids=doc.get("image_ids", []),
         expected_price=doc.get("expected_price"),
         maintenance=doc.get("maintenance"),
@@ -39,6 +42,8 @@ def property_doc_to_response(doc: dict) -> PropertyResponse:
         created_at=doc.get("created_at"),
         is_featured=doc.get("is_featured", False),
         is_verified=doc.get("is_verified", False),
+        is_new_launch=doc.get("is_new_launch", False),
+        is_trending=doc.get("is_trending", False),
         views_count=doc.get("views_count", 0),
     )
 
@@ -124,8 +129,9 @@ def list_my_properties(
     skip: int = Query(0, ge=0),
     limit: int = Query(50, ge=1, le=100),
 ):
+    query = {} if current_user.get("role") == "admin" else {"user_id": current_user["id"]}
     cursor = (
-        properties_collection.find({"user_id": current_user["id"]})
+        properties_collection.find(query)
         .sort("created_at", -1)
         .skip(skip)
         .limit(limit)
@@ -134,7 +140,7 @@ def list_my_properties(
 
 
 @router.get("/featured", response_model=List[PropertyResponse])
-def list_featured_properties(limit: int = Query(8, ge=1, le=50)):
+def list_featured_properties(limit: int = Query(50, ge=1, le=50)):
     cursor = (
         properties_collection.find({"is_featured": True})
         .sort("created_at", -1)
@@ -144,9 +150,9 @@ def list_featured_properties(limit: int = Query(8, ge=1, le=50)):
 
 
 @router.get("/new-launches", response_model=List[PropertyResponse])
-def list_new_launches(limit: int = Query(8, ge=1, le=50)):
+def list_new_launches(limit: int = Query(50, ge=1, le=50)):
     cursor = (
-        properties_collection.find({"listing_type": "sell"})
+        properties_collection.find({"is_new_launch": True})
         .sort("created_at", -1)
         .limit(limit)
     )
@@ -154,9 +160,9 @@ def list_new_launches(limit: int = Query(8, ge=1, le=50)):
 
 
 @router.get("/trending", response_model=List[PropertyResponse])
-def list_trending(limit: int = Query(8, ge=1, le=50)):
+def list_trending(limit: int = Query(50, ge=1, le=50)):
     cursor = (
-        properties_collection.find()
+        properties_collection.find({"is_trending": True})
         .sort("views_count", -1)
         .limit(limit)
     )

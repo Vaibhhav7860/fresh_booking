@@ -24,6 +24,9 @@ class PropertyCreate(BaseModel):
     amenities: List[str] = Field(default=[])
     posted_by: str = Field(default="Owner")
     age_of_property: str = Field(default="New Construction")
+    facing: Optional[str] = Field(default=None, description="East, West, North, South, etc.")
+    contact_email: Optional[str] = Field(default=None)
+    contact_phone: Optional[str] = Field(default=None)
 
     # Step 3: Photos & Price
     image_ids: List[str] = Field(default=[])
@@ -49,6 +52,9 @@ class PropertyUpdate(BaseModel):
     amenities: Optional[List[str]] = None
     posted_by: Optional[str] = None
     age_of_property: Optional[str] = None
+    facing: Optional[str] = None
+    contact_email: Optional[str] = None
+    contact_phone: Optional[str] = None
     image_ids: Optional[List[str]] = None
     expected_price: Optional[float] = None
     maintenance: Optional[float] = None
@@ -73,6 +79,9 @@ class PropertyResponse(BaseModel):
     amenities: List[str] = []
     posted_by: str = "Owner"
     age_of_property: str = "New Construction"
+    facing: Optional[str] = None
+    contact_email: Optional[str] = None
+    contact_phone: Optional[str] = None
     image_ids: List[str] = []
     expected_price: Optional[float] = None
     maintenance: Optional[float] = None
@@ -81,4 +90,6 @@ class PropertyResponse(BaseModel):
     created_at: Optional[str] = None
     is_featured: bool = False
     is_verified: bool = False
+    is_new_launch: bool = False
+    is_trending: bool = False
     views_count: int = 0

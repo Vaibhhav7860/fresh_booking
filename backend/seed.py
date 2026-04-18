@@ -20,6 +20,8 @@ fs = gridfs.GridFS(db)
 properties_coll = db["properties"]
 users_coll = db["users"]
 
+from app.utils.auth import hash_password
+
 def get_or_create_user():
     user = users_coll.find_one({"email": "admin@freshbooking.in"})
     if not user:
@@ -27,11 +29,17 @@ def get_or_create_user():
             "name": "Admin User",
             "email": "admin@freshbooking.in",
             "phone": "9876543210",
-            "hashed_password": "dummy",
+            "hashed_password": hash_password("admin123"),
             "role": "admin",
             "created_at": datetime.now(timezone.utc).isoformat()
         }).inserted_id
         return str(user_id)
+    
+    # Update existing admin to ensure password is correct
+    users_coll.update_one(
+        {"email": "admin@freshbooking.in"},
+        {"$set": {"hashed_password": hash_password("admin123")}}
+    )
     return str(user["_id"])
 
 def upload_image(filepath):
@@ -127,7 +135,17 @@ CITIES_DATA = {
 
 def generate_properties():
     print("Starting generation...")
-    # Clear existing dummy data? Optional, we will just append.
+
+    # Clean existing data
+    print("Clearing existing properties...")
+    properties_coll.delete_many({})
+    print("Clearing existing GridFS images...")
+    for grid_file in fs.find():
+        fs.delete(grid_file._id)
+    print("Clearing existing inquiries...")
+    db["inquiries"].delete_many({})
+    print("Cleanup complete!\n")
+
     user_id = get_or_create_user()
     
     total_inserted = 0
@@ -184,6 +202,9 @@ def generate_properties():
                 "amenities": random.sample(AMENITIES, random.randint(3, 8)),
                 "posted_by": random.choice(["Owner", "Agent", "Builder"]),
                 "age_of_property": random.choice(["New Construction", "0-5 Years", "5-10 Years", "10+ Years"]),
+                "facing": random.choice(["East", "West", "North", "South", "North-East", "North-West", "South-East", "South-West"]),
+                "contact_email": f"{loc['locality'].lower().replace(' ', '')}@freshbooking.in",
+                "contact_phone": f"98{random.randint(10000000, 99999999)}",
                 "image_ids": image_ids,
                 "expected_price": float(expected_price),
                 "maintenance": float(random.randint(1000, 10000)),
@@ -191,6 +212,8 @@ def generate_properties():
                 "created_at": created_at,
                 "is_featured": random.choice([True, False, False]), # 1/3 probability
                 "is_verified": random.choice([True, False]),
+                "is_new_launch": random.choice([True, False, False]), # 1/3 probability
+                "is_trending": random.choice([True, False, False]), # 1/3 probability
                 "views_count": random.randint(0, 500)
             }
             

@@ -11,7 +11,7 @@ export default function SectionServices() {
   return (
     <section className={`section section-alt`}>
       <div className="container">
-        <h2 className="section-title">Our Services</h2>
+        <h2 className="section-title">Services Coming Soon</h2>
         <p className="section-subtitle">Comprehensive real estate services to simplify your property journey</p>
 
         <div className={styles.grid}>

@@ -9,6 +9,7 @@ fs = gridfs.GridFS(db)
 # Collections
 users_collection = db["users"]
 properties_collection = db["properties"]
+inquiries_collection = db["inquiries"]
 
 # Create indexes
 users_collection.create_index("email", unique=True)

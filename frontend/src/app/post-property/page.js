@@ -12,6 +12,7 @@ const STEPS = ['Basic Info', 'Property Details', 'Photos & Price', 'Review & Pos
 const AMENITIES = ['Swimming Pool', 'Gym', 'Parking', 'Garden', '24x7 Security', 'Power Backup', 'Lift', 'Clubhouse', 'Playground', 'Intercom', 'Fire Safety', 'Water Supply'];
 const POSTED_BY = ['Owner', 'Agent', 'Builder'];
 const AGE_OPTIONS = ['New Construction', '0-5 Years', '5-10 Years', '10+ Years'];
+const FACING_OPTIONS = ['East', 'West', 'North', 'South', 'North-East', 'North-West', 'South-East', 'South-West'];
 
 export default function PostPropertyPage() {
   const { user, token } = useAuth();
@@ -43,6 +44,9 @@ export default function PostPropertyPage() {
     amenities: [],
     age_of_property: 'New Construction',
     posted_by: 'Owner',
+    facing: '',
+    contact_email: '',
+    contact_phone: '',
   });
 
   const update = (key, val) => setForm(prev => ({ ...prev, [key]: val }));
@@ -169,6 +173,19 @@ export default function PostPropertyPage() {
                 </div>
               </div>
             </div>
+
+            {form.posted_by && (
+              <div className={styles.row} style={{ marginTop: '4px' }}>
+                <div className="form-group" style={{ flex: 1 }}>
+                  <label className="form-label">Contact Email</label>
+                  <input className="form-input" type="email" placeholder="Enter email address" value={form.contact_email} onChange={(e) => update('contact_email', e.target.value)} />
+                </div>
+                <div className="form-group" style={{ flex: 1 }}>
+                  <label className="form-label">Contact Mobile Number</label>
+                  <input className="form-input" type="tel" placeholder="Enter 10-digit mobile number" value={form.contact_phone} onChange={(e) => update('contact_phone', e.target.value)} maxLength={10} />
+                </div>
+              </div>
+            )}
 
             <div className={styles.fieldGroup}>
               <label className={styles.label}>Property Type</label>
@@ -315,6 +332,17 @@ export default function PostPropertyPage() {
                     </button>
                   ))}
                 </div>
+              </div>
+            </div>
+
+            <div className={styles.fieldGroup}>
+              <label className={styles.label}>Facing</label>
+              <div className={styles.chipGroup}>
+                {FACING_OPTIONS.map(dir => (
+                  <button key={dir} type="button" className={`${styles.chip} ${form.facing === dir ? styles.chipActive : ''}`} onClick={() => update('facing', form.facing === dir ? '' : dir)}>
+                    {dir}
+                  </button>
+                ))}
               </div>
             </div>
 
