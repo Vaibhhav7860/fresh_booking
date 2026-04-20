@@ -1,4 +1,4 @@
-﻿from fastapi import APIRouter, HTTPException, UploadFile, File
+from fastapi import APIRouter, HTTPException, UploadFile, File, status
 from fastapi.responses import StreamingResponse
 from bson import ObjectId
 from backend_app.database import get_gridfs
@@ -52,3 +52,14 @@ def get_image(image_id: str):
             "Content-Disposition": f"inline; filename={grid_out.filename}",
         },
     )
+@router.delete("/{image_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_image(image_id: str):
+    if not ObjectId.is_valid(image_id):
+        raise HTTPException(status_code=400, detail="Invalid image ID")
+
+    fs = get_gridfs()
+
+    if not fs.exists(ObjectId(image_id)):
+        raise HTTPException(status_code=404, detail="Image not found")
+
+    fs.delete(ObjectId(image_id))

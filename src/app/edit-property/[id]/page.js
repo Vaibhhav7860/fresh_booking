@@ -1,108 +1,153 @@
 'use client';
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { createProperty, uploadImage, CITIES, PROPERTY_TYPES, formatPrice, formatArea } from '@/lib/api';
+import { getProperty, updateProperty, uploadImage, deleteImage, getImageUrl } from '@/lib/api';
+import { useRouter, useParams } from 'next/navigation';
 import AuthModal from '@/components/AuthModal';
 import Select from 'react-select';
-import styles from './page.module.css';
+// Reuse styles from post-property
+import styles from '../../post-property/page.module.css';
 
-const STEPS = ['Basic Info', 'Property Details', 'Photos & Price', 'Add / Review', 'Submit All'];
+const STEPS = ['Basic Info', 'Property Details', 'Photos & Price'];
 
+const PROPERTY_TYPES = [
+  { value: 'flat', label: 'Flat/Apartment', icon: '🏢' },
+  { value: 'independent_house', label: 'Independent House', icon: '🏠' },
+  { value: 'villa', label: 'Villa', icon: '🏡' },
+  { value: 'plot', label: 'Plot/Land', icon: '🗺️' },
+  { value: 'office', label: 'Office Space', icon: '💼' },
+  { value: 'shop', label: 'Shop/Showroom', icon: '🏪' },
+];
+
+const CITIES = ['Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Pune', 'Chennai', 'Kolkata', 'Ahmedabad', 'Gurgaon', 'Noida'];
 const AMENITIES = ['Swimming Pool', 'Gym', 'Parking', 'Garden', '24x7 Security', 'Power Backup', 'Lift', 'Clubhouse', 'Playground', 'Intercom', 'Fire Safety', 'Water Supply'];
-const POSTED_BY = ['Owner', 'Agent', 'Builder'];
 const AGE_OPTIONS = ['New Construction', '0-5 Years', '5-10 Years', '10+ Years'];
 const FACING_OPTIONS = ['East', 'West', 'North', 'South', 'North-East', 'North-West', 'South-East', 'South-West'];
+const POSTED_BY = ['Owner', 'Agent', 'Builder'];
 
-const INITIAL_FORM = {
-  listing_type: 'sell', property_type: 'flat', city: '', locality: '', project_name: '',
-  bhk_type: '2bhk', built_up_area: '', carpet_area: '', bathrooms: 2, balconies: 1,
-  floor_no: '', total_floors: '', furnishing: 'semi_furnished', description: '',
-  expected_price: '', maintenance: '', amenities: [], age_of_property: 'New Construction',
-  posted_by: 'Owner', facing: '', contact_email: '', contact_phone: '',
-};
-
-export default function PostPropertyPage() {
-  const { user, token } = useAuth();
+export default function EditPropertyPage() {
+  const { user } = useAuth();
   const router = useRouter();
+  const params = useParams();
+  const propertyId = params.id;
+
   const [step, setStep] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [postingIndex, setPostingIndex] = useState(-1);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
-  const [imageFiles, setImageFiles] = useState([]);
-  const [imagePreviews, setImagePreviews] = useState([]);
   const [showAuth, setShowAuth] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
 
-  // Batch: list of completed properties
-  const [propertiesList, setPropertiesList] = useState([]);
-  const [propertiesImages, setPropertiesImages] = useState([]);
+  const [form, setForm] = useState({});
+  const [existingImages, setExistingImages] = useState([]); // Array of image IDs
+  const [newImageFiles, setNewImageFiles] = useState([]);
+  const [newImagePreviews, setNewImagePreviews] = useState([]);
 
-  const [form, setForm] = useState({ ...INITIAL_FORM });
+  useEffect(() => {
+    if (!user) {
+      setLoading(false);
+      return;
+    }
 
-  const update = (key, val) => { setForm(prev => ({ ...prev, [key]: val })); setFieldErrors(prev => { const n = { ...prev }; delete n[key]; return n; }); };
+    getProperty(propertyId)
+      .then(data => {
+        // Initialize form with fetched data
+        setForm({
+          listing_type: data.listing_type || 'sell',
+          property_type: data.property_type || 'flat',
+          city: data.city || '',
+          locality: data.locality || '',
+          project_name: data.project_name || '',
+          bhk_type: data.bhk_type || '2bhk',
+          built_up_area: data.built_up_area || '',
+          carpet_area: data.carpet_area || '',
+          bathrooms: data.bathrooms || 2,
+          balconies: data.balconies || 1,
+          floor_no: data.floor_no || '',
+          total_floors: data.total_floors || '',
+          furnishing: data.furnishing || 'semi_furnished',
+          description: data.description || '',
+          expected_price: data.expected_price || '',
+          maintenance: data.maintenance || '',
+          amenities: data.amenities || [],
+          age_of_property: data.age_of_property || 'New Construction',
+          posted_by: data.posted_by || 'Owner',
+          facing: data.facing || '',
+          contact_email: data.contact_email || '',
+          contact_phone: data.contact_phone || '',
+        });
+        setExistingImages(data.image_ids || []);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, [user, propertyId]);
+
+  const update = (key, val) => { 
+    setForm(prev => ({ ...prev, [key]: val })); 
+    setFieldErrors(prev => { const n = { ...prev }; delete n[key]; return n; }); 
+  };
   
   const toggleArrayItem = (key, item) => {
     setForm(prev => {
-      const arr = prev[key];
+      const arr = prev[key] || [];
       if (arr.includes(item)) return { ...prev, [key]: arr.filter(i => i !== item) };
       return { ...prev, [key]: [...arr, item] };
     });
   };
 
-  if (!user) {
-    return (
-      <div className={styles.authPrompt}>
-        <div className={styles.authCard}>
-          <span style={{ fontSize: '48px' }}>🔐</span>
-          <h2>Login Required</h2>
-          <p>Please login or create an account to post your property.</p>
-          <button className="btn btn-primary btn-large" onClick={() => setShowAuth(true)}>Go to Login</button>
-        </div>
-        {showAuth && <AuthModal onClose={() => setShowAuth(false)} />}
-      </div>
-    );
-  }
-
   const handleImageAdd = (e) => {
     const files = Array.from(e.target.files);
-    const remaining = 20 - imageFiles.length;
+    const remaining = 20 - (existingImages.length + newImageFiles.length);
     const toAdd = files.slice(0, remaining);
-    setImageFiles(prev => [...prev, ...toAdd]);
+
+    setNewImageFiles(prev => [...prev, ...toAdd]);
     toAdd.forEach(file => {
       const reader = new FileReader();
-      reader.onload = (ev) => setImagePreviews(prev => [...prev, ev.target.result]);
+      reader.onload = (ev) => setNewImagePreviews(prev => [...prev, ev.target.result]);
       reader.readAsDataURL(file);
     });
     setFieldErrors(prev => { const n = { ...prev }; delete n.images; return n; });
   };
 
-  const removeImage = (idx) => {
-    setImageFiles(prev => prev.filter((_, i) => i !== idx));
-    setImagePreviews(prev => prev.filter((_, i) => i !== idx));
+  const removeNewImage = (idx) => {
+    setNewImageFiles(prev => prev.filter((_, i) => i !== idx));
+    setNewImagePreviews(prev => prev.filter((_, i) => i !== idx));
   };
 
-  // --- Validation ---
+  const removeExistingImage = async (idx) => {
+    const imageIdToRemove = existingImages[idx];
+    try {
+      // Remove physically from server to save space
+      await deleteImage(imageIdToRemove);
+      setExistingImages(prev => prev.filter((_, i) => i !== idx));
+    } catch (err) {
+      alert("Failed to delete image: " + err.message);
+    }
+  };
+
   const validateStep = (s) => {
     const errs = {};
     if (s === 0) {
       if (!form.city) errs.city = 'City is required';
-      if (!form.locality.trim()) errs.locality = 'Locality is required';
-      if (!form.project_name.trim()) errs.project_name = 'Project name is required';
-      if (!form.contact_email.trim()) errs.contact_email = 'Email is required';
+      if (!form.locality?.trim()) errs.locality = 'Locality is required';
+      if (!form.project_name?.trim()) errs.project_name = 'Project name is required';
+      if (!form.contact_email?.trim()) errs.contact_email = 'Email is required';
       else if (!/\S+@\S+\.\S+/.test(form.contact_email)) errs.contact_email = 'Enter a valid email';
-      if (!form.contact_phone.trim()) errs.contact_phone = 'Phone number is required';
+      if (!form.contact_phone?.trim()) errs.contact_phone = 'Phone number is required';
       else if (form.contact_phone.trim().length !== 10) errs.contact_phone = 'Enter a valid 10-digit number';
     } else if (s === 1) {
       if (!form.built_up_area) errs.built_up_area = 'Built-up area is required';
       if (!form.carpet_area) errs.carpet_area = 'Carpet area is required';
       if (!form.floor_no) errs.floor_no = 'Floor number is required';
       if (!form.total_floors) errs.total_floors = 'Total floors is required';
-      if (!form.description.trim()) errs.description = 'Description is required';
+      if (!form.description?.trim()) errs.description = 'Description is required';
       else if (form.description.trim().split(/\s+/).length < 10) errs.description = 'Description must be at least 10 words';
     } else if (s === 2) {
       if (!form.expected_price) errs.expected_price = 'Expected price is required';
-      if (imageFiles.length === 0) errs.images = 'Please upload at least 1 photo';
+      if (existingImages.length === 0 && newImageFiles.length === 0) errs.images = 'Please have at least 1 photo';
     }
     return errs;
   };
@@ -119,61 +164,72 @@ export default function PostPropertyPage() {
     setStep(step + 1);
   };
 
-  // --- Batch: Add another property ---
-  const addAnotherProperty = () => {
-    setPropertiesList(prev => [...prev, { ...form }]);
-    setPropertiesImages(prev => [...prev, { files: [...imageFiles], previews: [...imagePreviews] }]);
-    setForm({ ...INITIAL_FORM });
-    setImageFiles([]);
-    setImagePreviews([]);
-    setFieldErrors({});
-    setError('');
-    setStep(0);
-  };
-
-  const removeFromBatch = (idx) => {
-    setPropertiesList(prev => prev.filter((_, i) => i !== idx));
-    setPropertiesImages(prev => prev.filter((_, i) => i !== idx));
-  };
-
-  // --- Submit all ---
   const handleSubmit = async () => {
-    setLoading(true);
+    const errs = validateStep(2); // Final validation for step 2
+    if (Object.keys(errs).length > 0) {
+      setFieldErrors(errs);
+      setError('Please fill in all required fields');
+      return;
+    }
+
+    setSubmitting(true);
     setError('');
-    // Combine current form as the last property
-    const allProps = [...propertiesList, { ...form }];
-    const allImages = [...propertiesImages, { files: [...imageFiles], previews: [...imagePreviews] }];
     try {
-      for (let i = 0; i < allProps.length; i++) {
-        setPostingIndex(i);
-        const prop = allProps[i];
-        const imgs = allImages[i];
-        const imageIds = [];
-        for (const file of imgs.files) {
-          const res = await uploadImage(file);
-          imageIds.push(res.image_id);
-        }
-        const propertyData = {
-          ...prop, image_ids: imageIds,
-          built_up_area: prop.built_up_area ? parseFloat(prop.built_up_area) : null,
-          carpet_area: prop.carpet_area ? parseFloat(prop.carpet_area) : null,
-          floor_no: prop.floor_no ? parseInt(prop.floor_no) : null,
-          total_floors: prop.total_floors ? parseInt(prop.total_floors) : null,
-          expected_price: prop.expected_price ? parseFloat(prop.expected_price) : null,
-          maintenance: prop.maintenance ? parseFloat(prop.maintenance) : null,
-          bathrooms: prop.bathrooms ? parseInt(prop.bathrooms) : null,
-          balconies: prop.balconies !== undefined ? parseInt(prop.balconies) : null,
-        };
-        await createProperty(propertyData);
+      // Upload new images
+      const newImageIds = [];
+      for (const file of newImageFiles) {
+        const res = await uploadImage(file);
+        newImageIds.push(res.image_id);
       }
-      router.push('/my-properties?posted=true');
+
+      // Combine existing and new image IDs
+      const finalImageIds = [...existingImages, ...newImageIds];
+
+      const propertyData = {
+        ...form,
+        image_ids: finalImageIds,
+        built_up_area: form.built_up_area ? parseFloat(form.built_up_area) : null,
+        carpet_area: form.carpet_area ? parseFloat(form.carpet_area) : null,
+        floor_no: form.floor_no ? parseInt(form.floor_no) : null,
+        total_floors: form.total_floors ? parseInt(form.total_floors) : null,
+        expected_price: form.expected_price ? parseFloat(form.expected_price) : null,
+        maintenance: form.maintenance ? parseFloat(form.maintenance) : null,
+        bathrooms: form.bathrooms ? parseInt(form.bathrooms) : null,
+        balconies: form.balconies !== undefined ? parseInt(form.balconies) : null,
+      };
+
+      await updateProperty(propertyId, propertyData);
+      router.push('/my-properties?edited=true');
     } catch (err) {
       setError(err.message);
     } finally {
-      setLoading(false);
-      setPostingIndex(-1);
+      setSubmitting(false);
     }
   };
+
+  if (!user) {
+    return (
+      <div className={styles.authPrompt}>
+        <div className={styles.authCard}>
+          <span style={{ fontSize: '48px' }}>🔐</span>
+          <h2>Login Required</h2>
+          <p>Please login to edit your property.</p>
+          <button className="btn btn-primary btn-large" onClick={() => setShowAuth(true)}>Go to Login</button>
+        </div>
+        {showAuth && <AuthModal onClose={() => setShowAuth(false)} />}
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className={styles.page}>
+        <div className={styles.formCard} style={{ textAlign: 'center', padding: '60px' }}>
+          <h2>Loading property details...</h2>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.page}>
@@ -193,7 +249,7 @@ export default function PostPropertyPage() {
         {/* Step 1: Basic Info */}
         {step === 0 && (
           <div className={styles.stepContent}>
-            <h2 className={styles.stepTitle}>Basic Information</h2>
+            <h2 className={styles.stepTitle}>Basic Information (Edit)</h2>
 
             <div className={styles.row}>
               <div className={styles.fieldGroup} style={{ flex: 1 }}>
@@ -208,7 +264,7 @@ export default function PostPropertyPage() {
                 </div>
               </div>
               <div className={styles.fieldGroup} style={{ flex: 1 }}>
-                <label className={styles.label}>Posted By</label>
+                <label className={styles.label}>I am a</label>
                 <div className={styles.radioGroup}>
                   {POSTED_BY.map(val => (
                     <label key={val} className={`${styles.radio} ${form.posted_by === val ? styles.radioActive : ''}`}>
@@ -299,10 +355,10 @@ export default function PostPropertyPage() {
         {/* Step 2: Property Details */}
         {step === 1 && (
           <div className={styles.stepContent}>
-            <h2 className={styles.stepTitle}>Property Details</h2>
+            <h2 className={styles.stepTitle}>Property Details (Edit)</h2>
 
             <div className={styles.fieldGroup}>
-              <label className={styles.label}>BHK Type</label>
+              <label className={styles.label}>Configuration</label>
               <div className={styles.chipGroup}>
                 {['1bhk', '2bhk', '3bhk', '4bhk', '5+bhk'].map(b => (
                   <button key={b} type="button" className={`${styles.chip} ${form.bhk_type === b ? styles.chipActive : ''}`} onClick={() => update('bhk_type', b)}>
@@ -408,7 +464,7 @@ export default function PostPropertyPage() {
                   <button
                     key={amenity}
                     type="button"
-                    className={`${styles.typeCard} ${form.amenities.includes(amenity) ? styles.typeActive : ''}`}
+                    className={`${styles.typeCard} ${(form.amenities || []).includes(amenity) ? styles.typeActive : ''}`}
                     onClick={() => toggleArrayItem('amenities', amenity)}
                     style={{ padding: '8px 12px' }}
                   >
@@ -429,10 +485,24 @@ export default function PostPropertyPage() {
         {/* Step 3: Photos & Price */}
         {step === 2 && (
           <div className={styles.stepContent}>
-            <h2 className={styles.stepTitle}>Photos & Pricing</h2>
+            <h2 className={styles.stepTitle}>Photos & Pricing (Edit)</h2>
 
             <div className={styles.fieldGroup}>
-              <label className={styles.label}>Upload Photos *</label>
+              <label className={styles.label}>Existing Photos</label>
+              {existingImages.length > 0 ? (
+                <div className={styles.previewGrid} style={{ marginBottom: '20px' }}>
+                  {existingImages.map((id, i) => (
+                    <div key={id} className={styles.previewItem}>
+                      <img src={getImageUrl(id)} alt={`Existing ${i + 1}`} />
+                      <button className={styles.removeBtn} onClick={() => removeExistingImage(i)}>✕</button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p style={{ fontSize: '14px', color: 'var(--text-muted)', marginBottom: '20px' }}>No existing photos.</p>
+              )}
+
+              <label className={styles.label}>Upload New Photos *</label>
               <div className={styles.uploadZone}>
                 <input type="file" accept="image/*" multiple onChange={handleImageAdd} className={styles.fileInput} id="fileInput" />
                 <label htmlFor="fileInput" className={styles.uploadLabel}>
@@ -440,17 +510,17 @@ export default function PostPropertyPage() {
                   <p><strong>Drag & drop photos here</strong></p>
                   <p>or click to browse</p>
                   <button type="button" className={styles.chooseBtn}>Choose Files</button>
-                  <p className={styles.uploadHint}>Upload up to 20 photos (max 5MB each)</p>
+                  <p className={styles.uploadHint}>Upload up to {20 - existingImages.length} more photos (max 5MB each)</p>
                 </label>
               </div>
               {fieldErrors.images && <span className={styles.fieldError}>{fieldErrors.images}</span>}
 
-              {imagePreviews.length > 0 && (
+              {newImagePreviews.length > 0 && (
                 <div className={styles.previewGrid}>
-                  {imagePreviews.map((src, i) => (
+                  {newImagePreviews.map((src, i) => (
                     <div key={i} className={styles.previewItem}>
-                      <img src={src} alt={`Preview ${i + 1}`} />
-                      <button className={styles.removeBtn} onClick={() => removeImage(i)}>✕</button>
+                      <img src={src} alt={`Preview new ${i + 1}`} />
+                      <button className={styles.removeBtn} onClick={() => removeNewImage(i)}>✕</button>
                     </div>
                   ))}
                 </div>
@@ -478,103 +548,19 @@ export default function PostPropertyPage() {
           </div>
         )}
 
-        {/* Step 4: Add Another or Continue */}
-        {step === 3 && (
-          <div className={styles.stepContent}>
-            <div className={styles.reviewHeader}>
-              <div className={styles.reviewIcon}>✓</div>
-              <h2 className={styles.reviewTitle}>Property Added!</h2>
-              <p className={styles.reviewSubtitle}>Would you like to add another property or review and submit?</p>
-            </div>
-
-            <div className={styles.reviewCard}>
-              <h3 className={styles.reviewCardTitle}>Current Property Summary</h3>
-              <div className={styles.reviewRow}><span>Property Type</span><strong>{PROPERTY_TYPES.find(pt => pt.value === form.property_type)?.label}</strong></div>
-              <div className={styles.reviewRow}><span>Location</span><strong>{[form.locality, form.city].filter(Boolean).join(', ')}</strong></div>
-              <div className={styles.reviewRow}><span>Configuration</span><strong>{form.bhk_type?.toUpperCase()}</strong></div>
-              <div className={styles.reviewRow}><span>Area</span><strong>{form.built_up_area ? formatArea(parseFloat(form.built_up_area)) : 'N/A'}</strong></div>
-              <div className={styles.reviewRow}><span>Price</span><strong>{formatPrice(form.expected_price ? parseFloat(form.expected_price) : 0)}</strong></div>
-              <div className={styles.reviewRow}><span>Photos</span><strong>{imageFiles.length} uploaded</strong></div>
-            </div>
-
-            {propertiesList.length > 0 && (
-              <p className={styles.batchCount}>📦 {propertiesList.length} other {propertiesList.length === 1 ? 'property' : 'properties'} already in batch</p>
-            )}
-
-            <div className={styles.addAnotherActions}>
-              <button className={styles.addAnotherBtn} onClick={addAnotherProperty}>
-                <span className={styles.addIcon}>＋</span>
-                Add Another Property
-              </button>
-              <button className="btn btn-primary btn-large" onClick={() => setStep(4)}>
-                Continue to Review All →
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Step 5: Review All & Submit */}
-        {step === 4 && (
-          <div className={styles.stepContent}>
-            <div className={styles.reviewHeader}>
-              <div className={styles.reviewIcon}>📋</div>
-              <h2 className={styles.reviewTitle}>Review All Properties</h2>
-              <p className={styles.reviewSubtitle}>
-                {propertiesList.length + 1} {propertiesList.length + 1 === 1 ? 'property' : 'properties'} ready to post
-              </p>
-            </div>
-
-            {[...propertiesList, form].map((prop, idx) => {
-              const imgs = idx < propertiesImages.length ? propertiesImages[idx] : { files: imageFiles, previews: imagePreviews };
-              return (
-                <div key={idx} className={styles.reviewCard} style={{ marginBottom: '16px' }}>
-                  <div className={styles.batchCardHeader}>
-                    <h3 className={styles.reviewCardTitle}>
-                      <span className={styles.batchBadge}>{idx + 1}</span>
-                      {prop.project_name || 'Property'} — {prop.city}
-                    </h3>
-                    {(propertiesList.length > 0 && idx < propertiesList.length) && (
-                      <button className={styles.removePropertyBtn} onClick={() => removeFromBatch(idx)}>Remove</button>
-                    )}
-                  </div>
-                  <div className={styles.reviewRow}><span>Type</span><strong>{PROPERTY_TYPES.find(pt => pt.value === prop.property_type)?.label}</strong></div>
-                  <div className={styles.reviewRow}><span>Location</span><strong>{[prop.locality, prop.city].filter(Boolean).join(', ')}</strong></div>
-                  <div className={styles.reviewRow}><span>Config</span><strong>{prop.bhk_type?.toUpperCase()}</strong></div>
-                  <div className={styles.reviewRow}><span>Area</span><strong>{prop.built_up_area ? formatArea(parseFloat(prop.built_up_area)) : 'N/A'}</strong></div>
-                  <div className={styles.reviewRow}><span>Price</span><strong>{formatPrice(prop.expected_price ? parseFloat(prop.expected_price) : 0)}</strong></div>
-                  <div className={styles.reviewRow}><span>Photos</span><strong>{imgs.files.length} uploaded</strong></div>
-                </div>
-              );
-            })}
-
-            {loading && (
-              <div className={styles.postingProgress}>
-                <div className={styles.progressBar}>
-                  <div className={styles.progressFill} style={{ width: `${((postingIndex + 1) / (propertiesList.length + 1)) * 100}%` }}></div>
-                </div>
-                <p>Posting property {postingIndex + 1} of {propertiesList.length + 1}...</p>
-              </div>
-            )}
-          </div>
-        )}
-
         {error && <div className={styles.error}>{error}</div>}
 
         {/* Navigation */}
         <div className={styles.navButtons}>
-          {step > 0 && step !== 4 && (
+          {step > 0 && (
             <button className={`btn btn-outline ${styles.backBtn}`} onClick={() => { setStep(step - 1); setFieldErrors({}); setError(''); }}>Back</button>
           )}
-          {step === 4 && (
-            <button className={`btn btn-outline ${styles.backBtn}`} onClick={() => setStep(3)}>Back</button>
-          )}
           <div style={{ flex: 1 }} />
-          {step < 3 && (
+          {step < 2 ? (
             <button className="btn btn-primary btn-large" onClick={tryProceed}>Continue</button>
-          )}
-          {step === 4 && (
-            <button className={`btn btn-primary btn-large ${styles.submitFinal}`} onClick={handleSubmit} disabled={loading}>
-              {loading ? `Posting ${postingIndex + 1} of ${propertiesList.length + 1}...` : `Post ${propertiesList.length + 1 === 1 ? 'Property' : `All ${propertiesList.length + 1} Properties`} FREE`}
+          ) : (
+            <button className={`btn btn-primary btn-large ${styles.submitFinal}`} onClick={handleSubmit} disabled={submitting}>
+              {submitting ? 'Saving Changes...' : 'Save Changes'}
             </button>
           )}
         </div>

@@ -23,9 +23,15 @@ export default function MyPropertiesPage() {
     }
 
     // Check for posted=true in URL
-    if (typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('posted') === 'true') {
-      setToast('Property posted successfully! 🎉');
-      setTimeout(() => setToast(''), 4000);
+    if (typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(window.location.search);
+      if (searchParams.get('posted') === 'true') {
+        setToast('Property posted successfully! 🎉');
+        setTimeout(() => setToast(''), 4000);
+      } else if (searchParams.get('edited') === 'true') {
+        setToast('Property updated successfully! ✨');
+        setTimeout(() => setToast(''), 4000);
+      }
     }
   }, [user]);
 
@@ -119,6 +125,7 @@ export default function MyPropertiesPage() {
                   </div>
                 </div>
                 <div className={styles.cardActions}>
+                  <Link href={`/edit-property/${prop.id}`} className={styles.editBtn}>Edit</Link>
                   <button className={styles.deleteBtn} onClick={() => handleDelete(prop.id)}>Delete</button>
                 </div>
               </div>
@@ -131,3 +138,4 @@ export default function MyPropertiesPage() {
     </div>
   );
 }
+

@@ -142,7 +142,7 @@ input, textarea, select {
 }
 
 .section {
-  padding: 72px 0;
+  padding: 28px 0;
   position: relative;
 }
 
@@ -157,7 +157,7 @@ input, textarea, select {
 
 .section-title {
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 32px;
+  font-size: 22px;
   font-weight: 700;
   color: var(--text-heading);
   margin-bottom: 6px;
@@ -530,20 +530,20 @@ input, textarea, select {
 @media (max-width: 1024px) {
   .grid-4 { grid-template-columns: repeat(2, 1fr); }
   .grid-3 { grid-template-columns: repeat(2, 1fr); }
-  .section { padding: 56px 0; }
+  .section { padding: 24px 0; }
 }
 
 @media (max-width: 768px) {
   .grid-4 { grid-template-columns: 1fr; }
   .grid-3 { grid-template-columns: 1fr; }
   .grid-2 { grid-template-columns: 1fr; }
-  .section { padding: 44px 0; }
+  .section { padding: 20px 0; }
   .section-title { font-size: 26px; }
   .container { padding: 0 16px; }
 }
 
 @media (max-width: 480px) {
-  .section { padding: 36px 0; }
+  .section { padding: 16px 0; }
   .section-title { font-size: 23px; }
   .btn { padding: 11px 20px; font-size: 13px; }
 }

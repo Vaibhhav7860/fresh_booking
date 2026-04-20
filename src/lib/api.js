@@ -47,6 +47,7 @@ export const uploadImage = async (file) => {
   formData.append('file', file);
   return apiFetch('/api/images/upload', { method: 'POST', body: formData });
 };
+export const deleteImage = (id) => apiFetch(`/api/images/${id}`, { method: 'DELETE' });
 
 // Admin
 export const getAdminProperties = () => apiFetch('/api/admin/properties?limit=1000');

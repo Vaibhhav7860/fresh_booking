@@ -14,7 +14,6 @@ export default function SectionGetStarted() {
     <section className={`section ${styles.section}`}>
       <div className="container">
         <h2 className="section-title">GET STARTED WITH EXPLORING REAL ESTATE OPTIONS</h2>
-        <p className="section-subtitle">Everything you need to find your perfect property</p>
 
         <div className={styles.grid}>
           {OPTIONS.map((opt, i) => (

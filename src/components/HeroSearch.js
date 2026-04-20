@@ -18,13 +18,9 @@ export default function HeroSearch() {
   const handleSearch = (e) => {
     e.preventDefault();
     let params = new URLSearchParams();
-    if (activeTab === 'commercial') {
-      params.set('property_type', 'office');
-    } else if (activeTab === 'new_launch') {
-      params.set('listing_type', 'sell');
-    } else {
-      params.set('listing_type', activeTab);
-    }
+    // Map hero tabs to the quick filter values the properties page uses
+    const tabToQuick = { sell: 'buy', rent: 'rent', new_launch: 'new_launch', commercial: 'commercial' };
+    params.set('quick', tabToQuick[activeTab]);
     if (searchCity.trim()) {
       params.set('search', searchCity.trim());
     }
@@ -94,28 +90,6 @@ export default function HeroSearch() {
                 {city}
               </button>
             ))}
-          </div>
-        </div>
-
-        <div className={styles.stats}>
-          <div className={styles.stat}>
-            <strong>50,000+</strong>
-            <span>Premium Properties</span>
-          </div>
-          <div className={styles.statDivider}></div>
-          <div className={styles.stat}>
-            <strong>100+</strong>
-            <span>Cities Covered</span>
-          </div>
-          <div className={styles.statDivider}></div>
-          <div className={styles.stat}>
-            <strong>10,000+</strong>
-            <span>Happy Families</span>
-          </div>
-          <div className={styles.statDivider}></div>
-          <div className={styles.stat}>
-            <strong>99%</strong>
-            <span>Client Satisfaction</span>
           </div>
         </div>
       </div>

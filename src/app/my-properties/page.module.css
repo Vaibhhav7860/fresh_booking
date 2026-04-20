@@ -144,6 +144,23 @@
 
 .deleteBtn:hover { background: #FEF2F2; transform: translateY(-1px); }
 
+.editBtn {
+  padding: 10px 20px;
+  border: 1.5px solid var(--primary);
+  color: var(--primary);
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  background: white;
+  text-decoration: none;
+  text-align: center;
+}
+
+.editBtn:hover { background: var(--primary-bg); transform: translateY(-1px); }
+
+
 .emptyState {
   text-align: center;
   padding: 80px 20px;
