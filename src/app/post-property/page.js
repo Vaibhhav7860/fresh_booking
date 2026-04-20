@@ -257,6 +257,7 @@ export default function PostPropertyPage() {
             <div className="form-group">
               <label className="form-label">City</label>
               <Select
+                instanceId="city-select"
                 options={CITIES.map(c => ({ value: c, label: c }))}
                 value={form.city ? { value: form.city, label: form.city } : null}
                 onChange={(selected) => update('city', selected ? selected.value : '')}
