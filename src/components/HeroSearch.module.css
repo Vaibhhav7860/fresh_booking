@@ -264,7 +264,7 @@
 }
 
 @media (max-width: 768px) {
-  .hero { min-height: 300px; margin-bottom: 60px; }
+  .hero { min-height: 300px; margin-bottom: 130px; }
   .content { padding: 20px 16px 0; }
   .heading { font-size: 34px; }
   .sub { font-size: 14px; margin-bottom: 28px; }
@@ -278,7 +278,7 @@
 }
 
 @media (max-width: 480px) {
-  .hero { min-height: 260px; margin-bottom: 50px; }
+  .hero { min-height: 260px; margin-bottom: 120px; }
   .heading { font-size: 28px; }
   .content { padding: 16px 12px 0; }
   .tab { padding: 12px 10px; font-size: 12px; }
