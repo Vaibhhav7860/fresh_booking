@@ -427,7 +427,7 @@
   border-radius: 10px;
 }
 .similarItem {
-  min-width: 320px;
+  flex: 0 0 320px;
   scroll-snap-align: start;
 }
 .emptySimilar {
