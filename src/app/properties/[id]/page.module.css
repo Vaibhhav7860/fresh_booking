@@ -451,8 +451,35 @@
 }
 
 @media (max-width: 768px) {
+  .sliderWrapper { height: 300px; border-radius: var(--radius-lg); }
+  .sliderNavLeft, .sliderNavRight { width: 36px; height: 36px; font-size: 18px; }
+  .sliderNavLeft { left: 10px; }
+  .sliderNavRight { right: 10px; }
+  .title { font-size: 22px; }
+  .priceBig { font-size: 26px; }
   .quickInfoStrip { grid-template-columns: 1fr 1fr; gap: 20px; }
   .quickItem:nth-child(even) { border-right: none; }
   .detailsGrid { grid-template-columns: 1fr 1fr; }
   .amenitiesGrid { grid-template-columns: 1fr 1fr; }
+  .emiMonthly { font-size: 26px; }
+  .similarItem { flex: 0 0 280px; }
+  .similarTitle { font-size: 20px; }
+}
+
+@media (max-width: 480px) {
+  .sliderWrapper { height: 220px; margin-bottom: 20px; }
+  .titleRow { flex-direction: column; gap: 10px; }
+  .actions { align-self: flex-start; }
+  .title { font-size: 20px; }
+  .priceBig { font-size: 22px; }
+  .priceInfo { font-size: 13px; }
+  .quickInfoStrip { grid-template-columns: 1fr; gap: 16px; padding: 16px; }
+  .quickItem { border-right: none; border-bottom: 1px solid var(--border-light); padding-bottom: 12px; }
+  .quickItem:last-child { border-bottom: none; padding-bottom: 0; }
+  .detailsGrid { grid-template-columns: 1fr; }
+  .amenitiesGrid { grid-template-columns: 1fr; }
+  .sectionBlock { padding: 16px; }
+  .emiBlock { padding: 16px; }
+  .contactCard { padding: 16px; }
+  .similarItem { flex: 0 0 260px; }
 }

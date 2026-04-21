@@ -625,4 +625,26 @@
   .row { flex-direction: column; gap: 0; }
   .previewGrid { grid-template-columns: repeat(3, 1fr); }
   .addAnotherActions { flex-direction: column; }
+  .reviewRow { flex-direction: column; gap: 4px; }
+  .stepTitle { font-size: 22px; }
+}
+
+@media (max-width: 480px) {
+  .page { padding: 24px 12px 60px; }
+  .formCard { padding: 20px 16px; }
+  .stepTitle { font-size: 20px; gap: 8px; }
+  .subTitle { font-size: 16px; }
+  .typeGrid { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .typeCard { padding: 16px 12px; }
+  .typeIcon { font-size: 26px; }
+  .typeLabel { font-size: 13px; }
+  .chip { padding: 9px 16px; font-size: 13px; }
+  .radio { padding: 10px 16px; font-size: 14px; }
+  .previewGrid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .uploadZone { padding: 32px 16px; }
+  .navButtons { gap: 12px; }
+  .reviewTitle { font-size: 22px; }
+  .addAnotherBtn { padding: 14px 24px; font-size: 14px; }
+  .progress { padding: 16px 12px; }
+  .stepCircle { width: 34px; height: 34px; font-size: 13px; }
 }

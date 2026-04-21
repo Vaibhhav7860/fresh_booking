@@ -35,18 +35,6 @@ export default function HeroSearch() {
       <div className={styles.decorGrid}></div>
 
       <div className={styles.content}>
-        <span className={styles.tagline}>INDIA'S PREMIUM REAL ESTATE PLATFORM</span>
-        <h1 className={styles.heading}>
-          Find Your Perfect
-          <br />
-          <span className={styles.headingGold}>Dream Home</span>
-        </h1>
-        <p className={styles.sub}>
-          Discover luxurious properties across India's most sought-after locations.
-          <br className={styles.brDesktop} />
-          Buy, sell, or rent with confidence on FreshBooking.
-        </p>
-
         <div className={styles.searchCard}>
           <div className={styles.tabs}>
             {TABS.map(tab => (

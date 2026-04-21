@@ -138,6 +138,14 @@
 }
 
 @media (max-width: 480px) {
-  .grid { grid-template-columns: 1fr; }
+  .grid { grid-template-columns: 1fr; gap: 24px; }
   .brand { grid-column: span 1; }
+  .footer { padding: 40px 0 0; }
+  .logo { font-size: 20px; }
+  .tagline { font-size: 13px; }
+  .columnTitle { font-size: 14px; }
+  .column a, .column span { font-size: 12px; }
+  .bottom { font-size: 12px; padding: 16px 0; }
+  .bottomLinks { gap: 16px; flex-wrap: wrap; justify-content: center; }
+  .socials { flex-wrap: wrap; }
 }

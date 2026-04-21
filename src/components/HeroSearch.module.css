@@ -1,10 +1,10 @@
 .hero {
   position: relative;
-  min-height: auto;
+  min-height: 400px;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
-  background: linear-gradient(rgba(10, 26, 53, 0.65), rgba(27, 58, 107, 0.85)), url('/hero_image.jpg');
+  background: url('/hero_image.webp');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -51,6 +51,7 @@
   z-index: 2;
   text-align: center;
   padding: 25px 24px 0;
+  padding-bottom: 0;
   width: 100%;
   max-width: 880px;
   animation: fadeInUp 0.8s ease-out;
@@ -256,22 +257,34 @@
 }
 
 /* Responsive */
+@media (max-width: 991px) {
+  .hero { min-height: 340px; margin-bottom: 70px; }
+  .decorCircle1, .decorCircle2 { display: none; }
+  .searchCard { max-width: 100%; }
+}
+
 @media (max-width: 768px) {
-  .hero { padding-bottom: 0; margin-bottom: 80px; }
+  .hero { min-height: 300px; margin-bottom: 60px; }
+  .content { padding: 20px 16px 0; }
   .heading { font-size: 34px; }
   .sub { font-size: 14px; margin-bottom: 28px; }
   .brDesktop { display: none; }
   .searchRow { flex-direction: column; }
   .searchBtn { justify-content: center; }
   .quickLinks { display: none; }
+  .tabs { overflow-x: auto; scrollbar-width: none; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab { padding: 14px 12px; font-size: 13px; white-space: nowrap; }
 }
 
 @media (max-width: 480px) {
+  .hero { min-height: 260px; margin-bottom: 50px; }
   .heading { font-size: 28px; }
-  .content { padding: 50px 16px 0; }
-  .tabs { overflow-x: auto; }
-  .tab { padding: 14px 10px; font-size: 13px; }
+  .content { padding: 16px 12px 0; }
+  .tab { padding: 12px 10px; font-size: 12px; }
   .tabIcon { display: none; }
+  .searchInput { padding: 12px 12px 12px 44px; font-size: 14px; }
+  .searchBtn { padding: 12px 20px; font-size: 13px; }
 }
 
 @keyframes fadeInUp {
