@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { formatPrice, formatArea, getImageUrl } from '@/lib/api';
+import { BadgeCheck, Camera } from 'lucide-react';
 import styles from './PropertyCard.module.css';
 
 export default function PropertyCard({ property }) {
@@ -24,13 +25,13 @@ export default function PropertyCard({ property }) {
         <img src={imageUrl} alt={project_name || 'Property'} className={styles.image} onError={(e) => { e.target.src = '/placeholder-property.jpg'; }} />
         <div className={styles.badges}>
           {is_featured && <span className={styles.badgeFeatured}>Featured</span>}
-          {is_verified && <span className={styles.badgeVerified}>✓ Verified</span>}
+          {is_verified && <span className={styles.badgeVerified}><BadgeCheck size={14} /> Verified</span>}
         </div>
         <div className={styles.listingBadge}>
           {listing_type === 'sell' ? 'For Sale' : listing_type === 'rent' ? 'For Rent' : 'PG'}
         </div>
         {image_ids?.length > 1 && (
-          <div className={styles.imageCount}>📷 {image_ids.length}</div>
+          <div className={styles.imageCount}><Camera size={14} /> {image_ids.length}</div>
         )}
       </div>
 

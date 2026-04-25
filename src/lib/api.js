@@ -59,6 +59,15 @@ export const toggleNewLaunch = (id) => apiFetch(`/api/admin/properties/${id}/new
 export const toggleTrending = (id) => apiFetch(`/api/admin/properties/${id}/trending`, { method: 'PUT' });
 export const getInquiries = (token) => apiFetch('/api/inquiries', { headers: { Authorization: `Bearer ${token}` } });
 
+// Banners (public)
+export const getBanners = () => apiFetch('/api/banners');
+
+// Banners (admin)
+export const getAdminBanners = () => apiFetch('/api/admin/banners');
+export const createBanner = (data) => apiFetch('/api/admin/banners', { method: 'POST', body: JSON.stringify(data) });
+export const updateBanner = (id, data) => apiFetch(`/api/admin/banners/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+export const deleteBanner = (id) => apiFetch(`/api/admin/banners/${id}`, { method: 'DELETE' });
+
 // Utility
 export function formatPrice(price) {
   if (!price) return '₹ Price on Request';
@@ -98,10 +107,10 @@ export const CITIES = [
 ];
 
 export const PROPERTY_TYPES = [
-  { value: 'flat', label: 'Flat/Apartment', icon: '🏢' },
-  { value: 'independent_house', label: 'Independent House', icon: '🏠' },
-  { value: 'villa', label: 'Villa', icon: '🏡' },
-  { value: 'plot', label: 'Plot/Land', icon: '📍' },
-  { value: 'office', label: 'Office Space', icon: '🏬' },
-  { value: 'shop', label: 'Shop/Showroom', icon: '🏪' },
+  { value: 'flat', label: 'Flat/Apartment' },
+  { value: 'independent_house', label: 'Independent House' },
+  { value: 'villa', label: 'Villa' },
+  { value: 'plot', label: 'Plot/Land' },
+  { value: 'office', label: 'Office Space' },
+  { value: 'shop', label: 'Shop/Showroom' },
 ];

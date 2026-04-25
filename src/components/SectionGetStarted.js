@@ -1,12 +1,13 @@
 import Link from 'next/link';
+import { Home, Key, Sparkles, PenSquare, MapPin } from 'lucide-react';
 import styles from './SectionGetStarted.module.css';
 
 const OPTIONS = [
-  { icon: '🏠', title: 'Buy a Home', desc: 'Find your dream property from thousands of listings', link: '/properties?quick=buy', color: '#0D9488' },
-  { icon: '🔑', title: 'Rent a Home', desc: 'Discover rental properties that fit your budget', link: '/properties?quick=rent', color: '#6366F1' },
-  { icon: '✨', title: 'New Launches', desc: 'Explore newly launched projects across India', link: '/properties?quick=new_launch', color: '#F59E0B', badge: 'NEW' },
-  { icon: '📝', title: 'Post Property', desc: 'Sell or rent your property with ease', link: '/post-property', color: '#10B981' },
-  { icon: '📍', title: 'Plots / Land', desc: 'Find the perfect plot for your next investment', link: '/properties?quick=plot', color: '#F97316' },
+  { icon: <Home size={28} />, title: 'Buy a Home', desc: 'Find your dream property from thousands of listings', link: '/properties?quick=buy', color: '#0D9488' },
+  { icon: <Key size={28} />, title: 'Rent a Home', desc: 'Discover rental properties that fit your budget', link: '/properties?quick=rent', color: '#6366F1' },
+  { icon: <Sparkles size={28} />, title: 'New Launches', desc: 'Explore newly launched projects across India', link: '/properties?quick=new_launch', color: '#F59E0B', badge: 'NEW' },
+  { icon: <PenSquare size={28} />, title: 'Post Property', desc: 'Sell or rent your property with ease', link: '/post-property', color: '#10B981' },
+  { icon: <MapPin size={28} />, title: 'Plots / Land', desc: 'Find the perfect plot for your next investment', link: '/properties?quick=plot', color: '#F97316' },
 ];
 
 export default function SectionGetStarted() {

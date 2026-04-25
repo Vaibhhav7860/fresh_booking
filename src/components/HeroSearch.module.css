@@ -4,16 +4,144 @@
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  background: url('/hero_image.webp');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
   overflow: visible;
   padding-bottom: 0;
   margin-bottom: 80px;
 }
 
-/* Decorative elements */
+/* ── Carousel ──────────────────────────────────────────────── */
+
+.carouselContainer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.carouselSlide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out;
+  cursor: pointer;
+}
+
+.carouselSlideActive {
+  opacity: 1;
+  z-index: 1;
+}
+
+.carouselImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.carouselOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(15, 25, 48, 0.25) 0%,
+    rgba(15, 25, 48, 0.45) 60%,
+    rgba(15, 25, 48, 0.7) 100%
+  );
+  pointer-events: none;
+}
+
+/* Carousel Arrows */
+.carouselArrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0;
+}
+
+.hero:hover .carouselArrow {
+  opacity: 1;
+}
+
+.carouselArrow:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-50%) scale(1.08);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.carouselArrowLeft {
+  left: 20px;
+}
+
+.carouselArrowRight {
+  right: 20px;
+}
+
+/* Carousel Dots */
+.carouselDots {
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: flex;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.carouselDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.3s ease;
+}
+
+.carouselDot:hover {
+  border-color: white;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.carouselDotActive {
+  background: white;
+  border-color: white;
+  transform: scale(1.15);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+}
+
+/* Fallback static background (when no banners) */
+.staticBg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: url('/hero_image.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* ── Decorative elements ───────────────────────────────────── */
+
 .decorCircle1 {
   position: absolute;
   width: 500px;
@@ -23,6 +151,7 @@
   top: -150px;
   right: -100px;
   pointer-events: none;
+  z-index: 1;
 }
 
 .decorCircle2 {
@@ -34,6 +163,7 @@
   bottom: -100px;
   left: -100px;
   pointer-events: none;
+  z-index: 1;
 }
 
 .decorGrid {
@@ -44,7 +174,10 @@
     linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
   background-size: 60px 60px;
   pointer-events: none;
+  z-index: 1;
 }
+
+/* ── Content & Search Card ─────────────────────────────────── */
 
 .content {
   position: relative;
@@ -71,7 +204,7 @@
 }
 
 .heading {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Inter', sans-serif;
   font-size: 44px;
   font-weight: 700;
   color: white;
@@ -256,11 +389,13 @@
   background: var(--primary-bg);
 }
 
-/* Responsive */
+/* ── Responsive ────────────────────────────────────────────── */
+
 @media (max-width: 991px) {
   .hero { min-height: 340px; margin-bottom: 70px; }
   .decorCircle1, .decorCircle2 { display: none; }
   .searchCard { max-width: 100%; }
+  .carouselArrow { opacity: 1; width: 38px; height: 38px; }
 }
 
 @media (max-width: 768px) {
@@ -275,6 +410,9 @@
   .tabs { overflow-x: auto; scrollbar-width: none; }
   .tabs::-webkit-scrollbar { display: none; }
   .tab { padding: 14px 12px; font-size: 13px; white-space: nowrap; }
+  .carouselArrowLeft { left: 10px; }
+  .carouselArrowRight { right: 10px; }
+  .carouselDots { bottom: 10px; }
 }
 
 @media (max-width: 480px) {
@@ -285,6 +423,9 @@
   .tabIcon { display: none; }
   .searchInput { padding: 12px 12px 12px 44px; font-size: 14px; }
   .searchBtn { padding: 12px 20px; font-size: 13px; }
+  .carouselArrow { width: 34px; height: 34px; }
+  .carouselArrowLeft { left: 8px; }
+  .carouselArrowRight { right: 8px; }
 }
 
 @keyframes fadeInUp {

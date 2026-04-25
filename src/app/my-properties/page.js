@@ -4,6 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 import { getMyProperties, deleteProperty, getImageUrl, formatPrice, formatArea } from '@/lib/api';
 import Link from 'next/link';
 import AuthModal from '@/components/AuthModal';
+import { Lock, Home, Star, BadgeCheck } from 'lucide-react';
 import styles from './page.module.css';
 
 export default function MyPropertiesPage() {
@@ -26,10 +27,10 @@ export default function MyPropertiesPage() {
     if (typeof window !== 'undefined') {
       const searchParams = new URLSearchParams(window.location.search);
       if (searchParams.get('posted') === 'true') {
-        setToast('Property posted successfully! 🎉');
+        setToast('Property posted successfully!');
         setTimeout(() => setToast(''), 4000);
       } else if (searchParams.get('edited') === 'true') {
-        setToast('Property updated successfully! ✨');
+        setToast('Property updated successfully!');
         setTimeout(() => setToast(''), 4000);
       }
     }
@@ -50,7 +51,7 @@ export default function MyPropertiesPage() {
   if (!user) {
     return (
       <div className={styles.emptyState}>
-        <span style={{ fontSize: '48px' }}>🔐</span>
+        <Lock size={48} strokeWidth={1.5} />
         <h2>Login Required</h2>
         <p>Please login to view your listed properties.</p>
         <button className="btn btn-primary btn-large" onClick={() => setShowAuth(true)}>Go to Login</button>
@@ -90,7 +91,7 @@ export default function MyPropertiesPage() {
 
         {properties.length === 0 ? (
           <div className={styles.emptyState}>
-            <span style={{ fontSize: '48px' }}>🏠</span>
+            <Home size={48} strokeWidth={1.5} />
             <h2>No Properties Listed Yet</h2>
             <p>Start by posting your first property!</p>
             <Link href="/post-property" className="btn btn-primary btn-large">Post Property FREE</Link>
@@ -120,8 +121,8 @@ export default function MyPropertiesPage() {
                   </div>
                   <div className={styles.cardMeta}>
                     <span>Views: {prop.views_count}</span>
-                    {prop.is_featured && <span className={styles.featuredTag}>⭐ Featured</span>}
-                    {prop.is_verified && <span className={styles.verifiedTag}>✓ Verified</span>}
+                    {prop.is_featured && <span className={styles.featuredTag}><Star size={14} /> Featured</span>}
+                    {prop.is_verified && <span className={styles.verifiedTag}><BadgeCheck size={14} /> Verified</span>}
                   </div>
                 </div>
                 <div className={styles.cardActions}>

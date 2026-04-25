@@ -5,7 +5,17 @@ import { useAuth } from '@/context/AuthContext';
 import { createProperty, uploadImage, CITIES, PROPERTY_TYPES, formatPrice, formatArea } from '@/lib/api';
 import AuthModal from '@/components/AuthModal';
 import Select from 'react-select';
+import { Lock, Check, X, CheckCircle2, Package, ClipboardList, Building2, Home, TreePine, MapPin, Briefcase, Store } from 'lucide-react';
 import styles from './page.module.css';
+
+const PROPERTY_TYPE_ICONS = {
+  flat: <Building2 size={22} />,
+  independent_house: <Home size={22} />,
+  villa: <TreePine size={22} />,
+  plot: <MapPin size={22} />,
+  office: <Briefcase size={22} />,
+  shop: <Store size={22} />,
+};
 
 const STEPS = ['Basic Info', 'Property Details', 'Photos & Price', 'Add / Review', 'Submit All'];
 
@@ -54,7 +64,7 @@ export default function PostPropertyPage() {
     return (
       <div className={styles.authPrompt}>
         <div className={styles.authCard}>
-          <span style={{ fontSize: '48px' }}>🔐</span>
+          <Lock size={48} strokeWidth={1.5} />
           <h2>Login Required</h2>
           <p>Please login or create an account to post your property.</p>
           <button className="btn btn-primary btn-large" onClick={() => setShowAuth(true)}>Go to Login</button>
@@ -182,7 +192,7 @@ export default function PostPropertyPage() {
         {STEPS.map((s, i) => (
           <div key={i} className={`${styles.step} ${i <= step ? styles.stepActive : ''} ${i < step ? styles.stepDone : ''}`}>
             <div className={styles.stepCircle}>
-              {i < step ? '✓' : i + 1}
+              {i < step ? <Check size={16} /> : i + 1}
             </div>
             <span className={styles.stepLabel}>{s}</span>
           </div>
@@ -245,7 +255,7 @@ export default function PostPropertyPage() {
                     className={`${styles.typeCard} ${form.property_type === pt.value ? styles.typeActive : ''}`}
                     onClick={() => update('property_type', pt.value)}
                   >
-                    <span className={styles.typeIcon}>{pt.icon}</span>
+                    <span className={styles.typeIcon}>{PROPERTY_TYPE_ICONS[pt.value]}</span>
                     <span className={styles.typeLabel}>{pt.label}</span>
                   </button>
                 ))}
@@ -451,7 +461,7 @@ export default function PostPropertyPage() {
                   {imagePreviews.map((src, i) => (
                     <div key={i} className={styles.previewItem}>
                       <img src={src} alt={`Preview ${i + 1}`} />
-                      <button className={styles.removeBtn} onClick={() => removeImage(i)}>✕</button>
+                      <button className={styles.removeBtn} onClick={() => removeImage(i)}><X size={16} /></button>
                     </div>
                   ))}
                 </div>
@@ -483,7 +493,7 @@ export default function PostPropertyPage() {
         {step === 3 && (
           <div className={styles.stepContent}>
             <div className={styles.reviewHeader}>
-              <div className={styles.reviewIcon}>✓</div>
+              <div className={styles.reviewIcon}><CheckCircle2 size={48} /></div>
               <h2 className={styles.reviewTitle}>Property Added!</h2>
               <p className={styles.reviewSubtitle}>Would you like to add another property or review and submit?</p>
             </div>
@@ -499,7 +509,7 @@ export default function PostPropertyPage() {
             </div>
 
             {propertiesList.length > 0 && (
-              <p className={styles.batchCount}>📦 {propertiesList.length} other {propertiesList.length === 1 ? 'property' : 'properties'} already in batch</p>
+              <p className={styles.batchCount}><Package size={16} style={{ verticalAlign: 'middle', marginRight: '6px' }} />{propertiesList.length} other {propertiesList.length === 1 ? 'property' : 'properties'} already in batch</p>
             )}
 
             <div className={styles.addAnotherActions}>
@@ -518,7 +528,7 @@ export default function PostPropertyPage() {
         {step === 4 && (
           <div className={styles.stepContent}>
             <div className={styles.reviewHeader}>
-              <div className={styles.reviewIcon}>📋</div>
+              <div className={styles.reviewIcon}><ClipboardList size={48} /></div>
               <h2 className={styles.reviewTitle}>Review All Properties</h2>
               <p className={styles.reviewSubtitle}>
                 {propertiesList.length + 1} {propertiesList.length + 1 === 1 ? 'property' : 'properties'} ready to post

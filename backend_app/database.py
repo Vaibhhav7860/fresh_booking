@@ -1,4 +1,4 @@
-﻿from pymongo import MongoClient
+from pymongo import MongoClient
 import gridfs
 from backend_app.config import MONGODB_URL, DB_NAME
 
@@ -10,6 +10,7 @@ fs = gridfs.GridFS(db)
 users_collection = db["users"]
 properties_collection = db["properties"]
 inquiries_collection = db["inquiries"]
+banners_collection = db["banners"]
 
 # Create indexes
 users_collection.create_index("email", unique=True)

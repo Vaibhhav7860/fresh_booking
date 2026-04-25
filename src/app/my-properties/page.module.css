@@ -10,7 +10,7 @@
 }
 
 .title {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Inter', sans-serif;
   font-size: 32px;
   font-weight: 800;
   color: var(--text-heading);
@@ -80,7 +80,7 @@
 }
 
 .cardPrice { 
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Inter', sans-serif;
   font-size: 24px; 
   font-weight: 700; 
   color: var(--primary); 
@@ -176,7 +176,7 @@
 }
 
 .emptyState h2 { 
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Inter', sans-serif;
   font-size: 28px; 
   color: var(--text-heading); 
 }

@@ -1,10 +1,11 @@
+import { Landmark, ClipboardList, Palette, Wrench } from 'lucide-react';
 import styles from './SectionServices.module.css';
 
 const SERVICES = [
-  { icon: '🏦', title: 'Home Loans', desc: 'Get the best home loan offers from leading banks with lowest interest rates', tag: 'Coming Soon' },
-  { icon: '📋', title: 'Property Legal', desc: 'Complete legal verification and documentation services for your property', tag: 'Coming Soon' },
-  { icon: '🎨', title: 'Interior Design', desc: 'Transform your new home with professional interior design services', tag: 'Coming Soon' },
-  { icon: '🔧', title: 'Property Management', desc: 'End-to-end property management services for hassle-free ownership', tag: 'Coming Soon' },
+  { icon: <Landmark size={28} />, title: 'Home Loans', desc: 'Get the best home loan offers from leading banks with lowest interest rates', tag: 'Coming Soon' },
+  { icon: <ClipboardList size={28} />, title: 'Property Legal', desc: 'Complete legal verification and documentation services for your property', tag: 'Coming Soon' },
+  { icon: <Palette size={28} />, title: 'Interior Design', desc: 'Transform your new home with professional interior design services', tag: 'Coming Soon' },
+  { icon: <Wrench size={28} />, title: 'Property Management', desc: 'End-to-end property management services for hassle-free ownership', tag: 'Coming Soon' },
 ];
 
 export default function SectionServices() {

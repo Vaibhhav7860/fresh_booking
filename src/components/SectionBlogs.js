@@ -1,3 +1,4 @@
+import { Home, Scale, BarChart3 } from 'lucide-react';
 import styles from './SectionBlogs.module.css';
 
 const BLOGS = [
@@ -6,21 +7,21 @@ const BLOGS = [
     excerpt: 'Navigate the real estate market confidently with our comprehensive guide for first-time buyers.',
     category: 'Buying Guide',
     date: 'Dec 15, 2024',
-    emoji: '🏡',
+    icon: <Home size={32} />,
   },
   {
     title: 'RERA Regulations: What Every Property Buyer Must Know',
     excerpt: 'Understanding RERA compliance and how it protects your real estate investment in India.',
     category: 'Legal',
     date: 'Dec 10, 2024',
-    emoji: '⚖️',
+    icon: <Scale size={32} />,
   },
   {
     title: 'Best Cities for Real Estate Investment in India',
     excerpt: 'Discover which Indian cities offer the highest returns on property investments.',
     category: 'Investment',
     date: 'Dec 5, 2024',
-    emoji: '📊',
+    icon: <BarChart3 size={32} />,
   },
 ];
 
@@ -35,7 +36,7 @@ export default function SectionBlogs() {
           {BLOGS.map((blog, i) => (
             <article key={i} className={styles.card}>
               <div className={styles.cardImage}>
-                <span className={styles.emoji}>{blog.emoji}</span>
+                <span className={styles.emoji}>{blog.icon}</span>
               </div>
               <div className={styles.cardContent}>
                 <div className={styles.meta}>

@@ -104,7 +104,7 @@
 }
 
 .stepTitle {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Inter', sans-serif;
   font-size: 26px;
   font-weight: 700;
   color: var(--text-heading);
@@ -115,7 +115,7 @@
 }
 
 .subTitle {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Inter', sans-serif;
   font-size: 18px;
   font-weight: 700;
   color: var(--text-heading);
@@ -381,7 +381,7 @@
 }
 
 .reviewTitle {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Inter', sans-serif;
   font-size: 28px;
   font-weight: 700;
   color: var(--text-heading);
@@ -403,7 +403,7 @@
 }
 
 .reviewCardTitle {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Inter', sans-serif;
   font-size: 18px;
   font-weight: 700;
   margin-bottom: 20px;
@@ -479,7 +479,7 @@
 }
 
 .authCard h2 { 
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Inter', sans-serif;
   margin: 16px 0 10px; 
   font-size: 28px; 
   color: var(--text-heading);

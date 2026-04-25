@@ -27,7 +27,7 @@
 
 .logo {
   display: inline-flex;
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Inter', sans-serif;
   font-size: 24px;
   font-weight: 700;
   margin-bottom: 16px;
@@ -73,7 +73,7 @@
 }
 
 .columnTitle {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Inter', sans-serif;
   font-size: 16px;
   font-weight: 700;
   color: white;

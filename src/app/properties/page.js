@@ -3,6 +3,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import PropertyCard from '@/components/PropertyCard';
 import { getProperties } from '@/lib/api';
+import { Search } from 'lucide-react';
 import styles from './page.module.css';
 
 const QUICK_CITIES = ['Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Chennai', 'Pune'];
@@ -308,7 +309,7 @@ function PropertiesContent() {
               </>
             ) : (
               <div className={styles.emptyState}>
-                <span style={{ fontSize: '48px' }}>🔍</span>
+                <Search size={48} strokeWidth={1.5} />
                 <h2>No properties found</h2>
                 <p>Try adjusting your search or filters</p>
                 <button className="btn btn-outline" onClick={clearAll} style={{ marginTop: '16px' }}>Clear All Filters</button>

@@ -4,6 +4,7 @@ import { useParams } from 'next/navigation';
 import { getProperty, getProperties, getImageUrl, formatPrice, formatArea } from '@/lib/api';
 import PropertyCard from '@/components/PropertyCard';
 import ContactModal from '@/components/ContactModal';
+import { ChevronLeft, ChevronRight, Calendar, Search } from 'lucide-react';
 import styles from './page.module.css';
 
 function PropertyData() {
@@ -98,8 +99,8 @@ function PropertyData() {
               </div>
               {property.image_ids.length > 1 && (
                 <>
-                  <button className={styles.sliderNavLeft} onClick={prevSlide}>❮</button>
-                  <button className={styles.sliderNavRight} onClick={nextSlide}>❯</button>
+                  <button className={styles.sliderNavLeft} onClick={prevSlide}><ChevronLeft size={20} /></button>
+                  <button className={styles.sliderNavRight} onClick={nextSlide}><ChevronRight size={20} /></button>
                   <div className={styles.photoCountOverlay}>
                     {currentSlide + 1} / {property.image_ids.length} Photos
                   </div>
@@ -260,7 +261,7 @@ function PropertyData() {
 
                 <div className={styles.emiRow}>
                   <div className={styles.emiRowHeader}>
-                    <span style={{ color: 'var(--text-muted)' }}>📅 Loan Tenure</span>
+                    <span style={{ color: 'var(--text-muted)' }}><Calendar size={16} style={{ verticalAlign: 'middle', marginRight: '4px' }} />Loan Tenure</span>
                     <span className={styles.emiValInput}>{tenure} Years</span>
                   </div>
                   <input type="range" className={styles.emiSlider} min={1} max={30} step={1} value={tenure} onChange={e => setTenure(e.target.value)} />
@@ -356,7 +357,7 @@ function PropertyData() {
             </div>
           ) : (
             <div className={styles.emptySimilar}>
-              <span style={{ fontSize: '32px' }}>🔍</span>
+              <Search size={32} strokeWidth={1.5} />
               <p>No Similar Properties Available in this city.</p>
             </div>
           )}

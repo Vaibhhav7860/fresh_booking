@@ -56,30 +56,30 @@ export default function Footer() {
           {/* Company */}
           <div className={styles.column}>
             <h4 className={styles.columnTitle}>Company</h4>
-            <Link href="#">About Us</Link>
-            <Link href="#">Careers</Link>
-            <Link href="#">Blog</Link>
-            <Link href="#">Contact Us</Link>
-            <Link href="#">Partner With Us</Link>
+            <span>About Us</span>
+            <span>Careers</span>
+            <span>Blog</span>
+            <span>Contact Us</span>
+            <span>Partner With Us</span>
           </div>
 
           {/* Support */}
           <div className={styles.column}>
             <h4 className={styles.columnTitle}>Support</h4>
-            <Link href="#">Help Center</Link>
-            <Link href="#">Safety Guidelines</Link>
-            <Link href="#">Privacy Policy</Link>
-            <Link href="#">Terms of Use</Link>
-            <Link href="#">Sitemap</Link>
+            <span>Help Center</span>
+            <span>Safety Guidelines</span>
+            <Link href="/privacy-policy">Privacy Policy</Link>
+            <Link href="/terms">Terms of Use</Link>
+            <span>Sitemap</span>
           </div>
         </div>
 
         <div className={styles.bottom}>
           <p>© {new Date().getFullYear()} FreshBooking. All rights reserved.</p>
           <div className={styles.bottomLinks}>
-            <Link href="#">Privacy</Link>
-            <Link href="#">Terms</Link>
-            <Link href="#">Cookies</Link>
+            <Link href="/privacy-policy">Privacy</Link>
+            <Link href="/terms">Terms</Link>
+            <Link href="/cookies">Cookies</Link>
           </div>
         </div>
       </div>

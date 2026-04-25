@@ -64,7 +64,7 @@
 .icon { font-size: 28px; }
 
 .cardTitle {
-  font-family: 'Playfair Display', Georgia, serif;
+  font-family: 'Inter', sans-serif;
   font-size: 18px;
   font-weight: 700;
   color: var(--text-heading);

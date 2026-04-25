@@ -5,18 +5,19 @@ import { getProperty, updateProperty, uploadImage, deleteImage, getImageUrl } fr
 import { useRouter, useParams } from 'next/navigation';
 import AuthModal from '@/components/AuthModal';
 import Select from 'react-select';
+import { Lock, Check, X, Building2, Home, TreePine, MapPin, Briefcase, Store } from 'lucide-react';
 // Reuse styles from post-property
 import styles from '../../post-property/page.module.css';
 
 const STEPS = ['Basic Info', 'Property Details', 'Photos & Price'];
 
 const PROPERTY_TYPES = [
-  { value: 'flat', label: 'Flat/Apartment', icon: '🏢' },
-  { value: 'independent_house', label: 'Independent House', icon: '🏠' },
-  { value: 'villa', label: 'Villa', icon: '🏡' },
-  { value: 'plot', label: 'Plot/Land', icon: '🗺️' },
-  { value: 'office', label: 'Office Space', icon: '💼' },
-  { value: 'shop', label: 'Shop/Showroom', icon: '🏪' },
+  { value: 'flat', label: 'Flat/Apartment', icon: <Building2 size={22} /> },
+  { value: 'independent_house', label: 'Independent House', icon: <Home size={22} /> },
+  { value: 'villa', label: 'Villa', icon: <TreePine size={22} /> },
+  { value: 'plot', label: 'Plot/Land', icon: <MapPin size={22} /> },
+  { value: 'office', label: 'Office Space', icon: <Briefcase size={22} /> },
+  { value: 'shop', label: 'Shop/Showroom', icon: <Store size={22} /> },
 ];
 
 const CITIES = ['Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Pune', 'Chennai', 'Kolkata', 'Ahmedabad', 'Gurgaon', 'Noida'];
@@ -211,7 +212,7 @@ export default function EditPropertyPage() {
     return (
       <div className={styles.authPrompt}>
         <div className={styles.authCard}>
-          <span style={{ fontSize: '48px' }}>🔐</span>
+          <Lock size={48} strokeWidth={1.5} />
           <h2>Login Required</h2>
           <p>Please login to edit your property.</p>
           <button className="btn btn-primary btn-large" onClick={() => setShowAuth(true)}>Go to Login</button>
@@ -238,7 +239,7 @@ export default function EditPropertyPage() {
         {STEPS.map((s, i) => (
           <div key={i} className={`${styles.step} ${i <= step ? styles.stepActive : ''} ${i < step ? styles.stepDone : ''}`}>
             <div className={styles.stepCircle}>
-              {i < step ? '✓' : i + 1}
+              {i < step ? <Check size={16} /> : i + 1}
             </div>
             <span className={styles.stepLabel}>{s}</span>
           </div>
@@ -495,7 +496,7 @@ export default function EditPropertyPage() {
                   {existingImages.map((id, i) => (
                     <div key={id} className={styles.previewItem}>
                       <img src={getImageUrl(id)} alt={`Existing ${i + 1}`} />
-                      <button className={styles.removeBtn} onClick={() => removeExistingImage(i)}>✕</button>
+                      <button className={styles.removeBtn} onClick={() => removeExistingImage(i)}><X size={16} /></button>
                     </div>
                   ))}
                 </div>
@@ -521,7 +522,7 @@ export default function EditPropertyPage() {
                   {newImagePreviews.map((src, i) => (
                     <div key={i} className={styles.previewItem}>
                       <img src={src} alt={`Preview new ${i + 1}`} />
-                      <button className={styles.removeBtn} onClick={() => removeNewImage(i)}>✕</button>
+                      <button className={styles.removeBtn} onClick={() => removeNewImage(i)}><X size={16} /></button>
                     </div>
                   ))}
                 </div>

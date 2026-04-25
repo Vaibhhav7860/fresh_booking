@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { apiFetch, formatPrice } from '@/lib/api';
+import { X, CheckCircle2 } from 'lucide-react';
 import styles from './ContactModal.module.css';
 
 export default function ContactModal({ property, inquiryType, onClose }) {
@@ -58,7 +59,7 @@ export default function ContactModal({ property, inquiryType, onClose }) {
   return (
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={e => e.stopPropagation()}>
-        <button className={styles.closeBtn} onClick={onClose}>✕</button>
+        <button className={styles.closeBtn} onClick={onClose}><X size={20} /></button>
 
         {!submitted ? (
           <>
@@ -138,7 +139,7 @@ export default function ContactModal({ property, inquiryType, onClose }) {
           </>
         ) : (
           <div className={styles.successState}>
-            <div className={styles.successIcon}>✓</div>
+            <div className={styles.successIcon}><CheckCircle2 size={48} /></div>
             <h2 className={styles.successTitle}>Inquiry Submitted!</h2>
             <p className={styles.successSub}>Your request has been sent to the admin. Here are the owner&apos;s contact details:</p>
 

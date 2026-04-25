@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import PropertyCard from '@/components/PropertyCard';
 import { getNewLaunches } from '@/lib/api';
+import { Construction } from 'lucide-react';
 
 export default function NewLaunchesPage() {
   const [properties, setProperties] = useState([]);
@@ -29,7 +30,7 @@ export default function NewLaunchesPage() {
           </div>
         ) : (
           <div style={{ textAlign: 'center', padding: '80px 0', color: 'var(--text-muted)' }}>
-            <p style={{ fontSize: '48px', marginBottom: '12px' }}>🏗️</p>
+            <p style={{ marginBottom: '12px' }}><Construction size={48} strokeWidth={1.5} /></p>
             <p>No new launches available at the moment.</p>
           </div>
         )}
